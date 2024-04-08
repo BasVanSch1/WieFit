@@ -77,8 +77,9 @@ namespace WieFit.Common.DAL
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw ex;
                 return false;
             }
             return true;
