@@ -42,5 +42,31 @@ namespace WieFit.Common.DAL
                 return false;
             }
         }
+
+        public bool CreateActivity(Common.Activity activity)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    sqlConnection.Open();
+                    string query = @"INSERT INTO ACTIVITY(name, description) VALUES(@name, @description);";
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
+                        {
+                            sqlCommand.Parameters.AddWithValue("@name", activity.Name);
+                            sqlCommand.Parameters.AddWithValue("@description", activity.Description);
+                            sqlCommand.ExecuteNonQuery();
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
