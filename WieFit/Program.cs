@@ -1,6 +1,4 @@
-﻿using WieFit.Common.Users;
-
-namespace WieFit
+﻿namespace WieFit
 {
     internal class Program
     {
