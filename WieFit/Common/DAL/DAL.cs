@@ -11,7 +11,7 @@ namespace WieFit.Common.DAL
     internal class DAL
     {
         private static readonly DAL instance = new DAL();
-        private readonly string connectionString = @"Data Source=.;Integrated Security=True;Encrypt=True;Trust Server Certificate=True;";
+        private readonly string connectionString = @"Data Source=.;Initial Catalog=WieFit;Integrated Security=True;Encrypt=True;Trust Server Certificate=True;";
 
         public static DAL Instance { get { return instance; } }
 
