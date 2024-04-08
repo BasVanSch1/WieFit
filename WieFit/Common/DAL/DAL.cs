@@ -11,7 +11,7 @@ namespace WieFit.Common.DAL
     internal class DAL
     {
         private static readonly DAL instance = new DAL();
-        private readonly string connectionString = @"Data Source=.;Integrated Security=True;Encrypt=True;Trust Server Certificate=True;";
+        private readonly string connectionString = @"Data Source=.;Initial Catalog=WieFit;Integrated Security=True;Encrypt=True;Trust Server Certificate=True;";
 
         public static DAL Instance { get { return instance; } }
 
@@ -40,7 +40,7 @@ namespace WieFit.Common.DAL
                             cmd.Parameters.AddWithValue("@phonenumber", user.PhoneNumber);
                             cmd.Parameters.AddWithValue("@age", user.Age);
                             cmd.Parameters.AddWithValue("@gender", user.Gender);
-                            cmd.Parameters.AddWithValue("@type", type); // Altijd student, anders moet je voor elke type een nieuwe methode aanmaken
+                            cmd.Parameters.AddWithValue("@type", type);
 
                             cmd.ExecuteNonQuery();
 
@@ -49,7 +49,7 @@ namespace WieFit.Common.DAL
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception) // Catch all, nu tijdelijk geen error output. Als GUI wordt gemaakt zal er een pop-up komen met de error.
             {
                 return false;
             }
