@@ -8,7 +8,7 @@ namespace WieFit.Common.Users
 {
     internal class User
     {
-        private readonly DAL.DAL database = DAL.DAL.Instance;
+        protected readonly DAL.DAL database = DAL.DAL.Instance;
 
         public string Username { get; private set; }
         public string Name { get; private set; }
