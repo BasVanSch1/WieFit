@@ -72,7 +72,7 @@ namespace WieFit.Common.DAL
                             sqlCommand.Parameters.AddWithValue("@name", activity.Name);
                             sqlCommand.Parameters.AddWithValue("@description", activity.Description);
                             sqlCommand.ExecuteNonQuery();
-                            return true;
+                            sqlTransaction.Commit();
                         }
                     }
                 }
@@ -81,6 +81,7 @@ namespace WieFit.Common.DAL
             {
                 return false;
             }
+            return true;
         }
     }
 }
