@@ -56,5 +56,71 @@ namespace WieFit.Common.DAL
 
             return true;
         }
+
+        public bool Addlocation(Location location)
+        {
+            try
+            {
+                using (SqlConnection sqlconnection = new SqlConnection(connectionString))
+                {
+                    sqlconnection.Open();
+                    string query = "INSERT INTO LOCATION (Location_id, name, adress, Postalcode, Country) VALUES (@Location_id, @name, @adress @Postalcode, @Country)";
+                    using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
+                    {
+                        using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
+                        {
+                            command.Parameters.AddWithValue("@Location_id", location.Id);
+                            command.Parameters.AddWithValue("@name", location.Name);
+                            command.Parameters.AddWithValue("@adress,", location.Adress);
+                            command.Parameters.AddWithValue("@Postalcode", location.postalcode);
+                            command.Parameters.AddWithValue("@Country", location.country);
+
+                            command.ExecuteNonQuery();
+
+                            sqlTransaction.Commit();
+                        }
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+
+        }
+
+        public bool DeleteLocation(Location location)
+        {
+            try
+            {
+                using (SqlConnection sqlconnection = new SqlConnection(connectionString))
+                {
+                    sqlconnection.Open();
+                    string query = "DELETE FROM LOCATION WHERE Location_id = @Location_id";
+                    using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
+                    {
+                        using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
+                        {
+                            {
+                                command.Parameters.AddWithValue("@Location_id", location.Id);
+                                command.ExecuteNonQuery();
+                            }
+
+                        }
+                    }
+                }
+                return true;
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+
+        }
     }
 }
