@@ -6,7 +6,30 @@ using System.Threading.Tasks;
 
 namespace WieFit.Common.Users
 {
-    internal class Student
+    internal class Student : User
     {
+        public Student(string _username, string _name, string _email, string _adress, string _phoneNumber, int _age, char _gender)
+            : base (_username, _name, _email, _adress, _phoneNumber, _age, _gender)
+        { }
+
+        public override bool CreateUser(string _password)
+        {
+            return database.CreateUser(this, _password, 'S');
+        }
+
+        public override bool SignIn()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool SignOut()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool UpdateUser()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

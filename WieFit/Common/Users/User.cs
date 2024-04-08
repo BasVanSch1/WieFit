@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace WieFit.Common.Users
 {
-    internal class User
+    internal abstract class User
     {
-        private readonly DAL.DAL database = DAL.DAL.Instance;
+        protected readonly DAL.DAL database = DAL.DAL.Instance;
 
         public string Username { get; private set; }
         public string Name { get; private set; }
@@ -28,5 +28,10 @@ namespace WieFit.Common.Users
             Age = _age;
             Gender = _gender;
         }
+
+        public abstract bool CreateUser(string _password);
+        public abstract bool UpdateUser();
+        public abstract bool SignIn();
+        public abstract bool SignOut();
     }
 }
