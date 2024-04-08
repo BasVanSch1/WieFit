@@ -18,7 +18,7 @@ namespace WieFit.Common.DAL
         static DAL() { }
         private DAL() { }
 
-        public bool CreateUser(User user, string password)
+        public bool CreateUser(User user, string password, char type)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace WieFit.Common.DAL
                             cmd.Parameters.AddWithValue("@phonenumber", user.PhoneNumber);
                             cmd.Parameters.AddWithValue("@age", user.Age);
                             cmd.Parameters.AddWithValue("@gender", user.Gender);
-                            cmd.Parameters.AddWithValue("@type", 'S'); // Altijd student, anders moet je voor elke type een nieuwe methode aanmaken
+                            cmd.Parameters.AddWithValue("@type", type); // Altijd student, anders moet je voor elke type een nieuwe methode aanmaken
 
                             cmd.ExecuteNonQuery();
 
