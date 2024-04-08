@@ -83,7 +83,7 @@ namespace WieFit.Common.DAL
                 }
 
             }
-            catch (Exception)
+            catch (Exception) // Catch all, nu tijdelijk geen error output. Als GUI wordt gemaakt zal er een pop-up komen met de error.
             {
                 return false;
             }
