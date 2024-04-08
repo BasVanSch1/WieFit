@@ -1,4 +1,7 @@
-﻿namespace WieFit
+﻿using System.Diagnostics;
+using WieFit.Common.Users;
+
+namespace WieFit
 {
     internal class Program
     {
