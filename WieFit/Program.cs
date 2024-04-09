@@ -115,11 +115,11 @@ namespace WieFit
             Common.Activity activity = new Common.Activity(Name,Description);
             if (O.CreateActivity(activity))
             {
-                Console.WriteLine("Succes");
+                Console.Write("Succes");
             }
             else
             {
-                Console.WriteLine("Failed");
+                Console.Write("Failed");
             }
         } 
     }
