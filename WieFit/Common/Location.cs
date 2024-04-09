@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WieFit.Common;
 using WieFit.Common.DAL;
 
 internal class Location
@@ -16,9 +17,10 @@ internal class Location
     public string postalcode { get; set; }
     public string city { get; set; }
     public string country { get; set; }
+    public Planning Planning { get; set; }
 
 
-    public Location(int _id, string _name, string _adress, string _postalcode, string _city, string _country)
+    public Location(int _id, string _name, string _adress, string _postalcode, string _city, string _country, Planning planning)
     {
         id = _id;
         name = _name;
@@ -26,6 +28,7 @@ internal class Location
         postalcode = _postalcode;
         city = _city;
         country = _country;
+        Planning = planning;
     }
 
     public Location(string _name, string _adress, string _postalcode, string _city, string _country)
@@ -35,6 +38,7 @@ internal class Location
         postalcode = _postalcode;
         city = _city;
         country = _country;
+        Planning = new Planning();
     }
 
     public bool AddLocation()
