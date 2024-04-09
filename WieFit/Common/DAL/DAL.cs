@@ -98,16 +98,16 @@ namespace WieFit.Common.DAL
                     {
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
                         {
-                            command.Parameters.AddWithValue("@name", location.name);
-                            command.Parameters.AddWithValue("@adress", location.adress);
-                            command.Parameters.AddWithValue("@postalcode", location.postalcode);
-                            command.Parameters.AddWithValue("@country", location.country);
+                            command.Parameters.AddWithValue("@name", location.Name);
+                            command.Parameters.AddWithValue("@adress", location.Address);
+                            command.Parameters.AddWithValue("@postalcode", location.Postalcode);
+                            command.Parameters.AddWithValue("@country", location.Country);
 
                             command.ExecuteNonQuery();
                             
                             command.CommandText = "SELECT CAST(@@Identity as INT);";
                             var id = (int)command.ExecuteScalar();
-                            location.id = id;
+                            location.Id = id;
                           
                             sqlTransaction.Commit();
                         }
@@ -132,7 +132,7 @@ namespace WieFit.Common.DAL
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
                         {
                             {
-                                command.Parameters.AddWithValue("@locationid", location.id);
+                                command.Parameters.AddWithValue("@locationid", location.Id);
                                 command.ExecuteNonQuery();
                               
                                 sqlTransaction.Commit();
