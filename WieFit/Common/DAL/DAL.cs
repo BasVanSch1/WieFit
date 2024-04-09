@@ -104,6 +104,10 @@ namespace WieFit.Common.DAL
                             command.Parameters.AddWithValue("@country", location.country);
 
                             command.ExecuteNonQuery();
+                            
+                            command.CommandText = "SELECT CAST(@@Identity as INT);";
+                            var id = (int)command.ExecuteScalar();
+                            location.id = id;
                           
                             sqlTransaction.Commit();
                         }
