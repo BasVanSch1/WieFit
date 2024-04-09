@@ -93,7 +93,7 @@ namespace WieFit.Common.DAL
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string query = "INSERT INTO LOCATION (planningid, name, adress, postalcode, country) VALUES (@planningid, @name, @adress, @postalcode, @country);";
+                    string query = "INSERT INTO LOCATION (planningid, name, adress, postalcode, city, country) VALUES (@planningid, @name, @adress, @postalcode, @city, @country);";
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
@@ -102,6 +102,7 @@ namespace WieFit.Common.DAL
                             command.Parameters.AddWithValue("@name", location.Name);
                             command.Parameters.AddWithValue("@adress", location.Address);
                             command.Parameters.AddWithValue("@postalcode", location.Postalcode);
+                            command.Parameters.AddWithValue("@city", location.City);
                             command.Parameters.AddWithValue("@country", location.Country);
 
                             command.ExecuteNonQuery();
@@ -115,8 +116,9 @@ namespace WieFit.Common.DAL
                     }
                 }
             } 
-            catch (Exception ex) {
-              return false;
+            catch (Exception ex)
+            {
+                return false;
             }
             return true;
         }
