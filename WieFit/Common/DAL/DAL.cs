@@ -75,6 +75,11 @@ namespace WieFit.Common.DAL
 
                             command.ExecuteNonQuery();
                             
+                            //Get ID from database
+                            command.CommandText = "SELECT CAST(@@Identity as INT);";
+                            var id = (int)command.ExecuteScalar();
+                            planning.Id = id;
+                            
                             transaction.Commit();
                         }
                     }
