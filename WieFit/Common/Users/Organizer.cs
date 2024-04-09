@@ -32,5 +32,9 @@ namespace WieFit.Common.Users
         {
             throw new NotImplementedException();
         }
+        public bool CreateActivity(Activity activity)
+        {
+            return database.CreateActivity(activity);
+        }
     }
 }
