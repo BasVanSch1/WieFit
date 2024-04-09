@@ -7,7 +7,7 @@ namespace WieFit
     {
         static void Main(string[] args)
         {
-            CreateUser();
+            CreateActivity();
         }
 
         static void CreateUser()
@@ -102,5 +102,25 @@ namespace WieFit
                     break;
             }
         }
+
+        static void CreateActivity()
+        {
+            Organizer O = new Organizer("username","name","mail","adress","telefoonnummer", 0,'M');
+            Console.WriteLine("Enter Activity name...");
+            string Name = Console.ReadLine();
+
+            Console.WriteLine("Enter Activiry Description");
+            string Description = Console.ReadLine();
+
+            Common.Activity activity = new Common.Activity(Name,Description);
+            if (O.CreateActivity(activity))
+            {
+                Console.WriteLine("Succes");
+            }
+            else
+            {
+                Console.WriteLine("Failed");
+            }
+        } 
     }
 }
