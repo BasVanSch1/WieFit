@@ -93,11 +93,12 @@ namespace WieFit.Common.DAL
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string query = "INSERT INTO LOCATION (name, adress, postalcode, country) VALUES (@name, @adress, @postalcode, @country);";
+                    string query = "INSERT INTO LOCATION (planningid, name, adress, postalcode, country) VALUES (@planningid, @name, @adress, @postalcode, @country);";
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
                         {
+                            command.Parameters.AddWithValue("@planningid", location.Planning.Id);
                             command.Parameters.AddWithValue("@name", location.Name);
                             command.Parameters.AddWithValue("@adress", location.Address);
                             command.Parameters.AddWithValue("@postalcode", location.Postalcode);
