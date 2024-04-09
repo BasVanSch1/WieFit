@@ -56,7 +56,7 @@ namespace WieFit.Common.DAL
 
             return true;
         }
-
+      
         public bool CreateActivity(Common.Activity activity)
         {
             try
@@ -84,7 +84,7 @@ namespace WieFit.Common.DAL
             }
             return true;
         }
-
+      
         public bool CreatePlanning(Planning planning)
         {
             try
@@ -92,7 +92,6 @@ namespace WieFit.Common.DAL
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     string userStatement = @"INSERT INTO PLANNING (isactive)  VALUES (@isactive)";
-
                     connection.Open();
 
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -102,7 +101,7 @@ namespace WieFit.Common.DAL
                             command.Parameters.AddWithValue("@isactive", planning.IsActive);
 
                             command.ExecuteNonQuery();
-
+                          
                             //Get ID from database
                             command.CommandText = "SELECT CAST(@@Identity as INT);";
                             var id = (int)command.ExecuteScalar();
@@ -112,8 +111,7 @@ namespace WieFit.Common.DAL
                         }
                     }
                 }
-            }
-            catch (Exception) // Catch all, nu tijdelijk geen error output. Als GUI wordt gemaakt zal er een pop-up komen met de error.
+            } catch(Exception) // Catch all, nu tijdelijk geen error output. Als GUI wordt gemaakt zal er een pop-up komen met de error.
             {
                 return false;
             }

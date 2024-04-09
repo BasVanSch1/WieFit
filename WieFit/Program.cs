@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using WieFit.Common;
 using WieFit.Common.Users;
 
 namespace WieFit
@@ -7,9 +7,14 @@ namespace WieFit
     {
         static void Main(string[] args)
         {
-            CreateActivity();
         }
 
+        static void CreatePlanning()
+        {
+            Planning planning = new Planning();
+            planning.CreatePlanning();
+        }
+        
         static void CreateUser()
         {
             Console.Write("Enter your Username: ");
