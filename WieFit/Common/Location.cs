@@ -43,6 +43,7 @@ internal class Location
 
     public bool AddLocation()
     {
+        if (!Planning.CreatePlanning()) return false;
         return database.Addlocation(this);
     }
     public bool DeleteLocation()
