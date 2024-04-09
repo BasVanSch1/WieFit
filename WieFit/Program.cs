@@ -1,4 +1,5 @@
-﻿using WieFit.Common.Users;
+﻿using WieFit.Common;
+using WieFit.Common.Users;
 
 namespace WieFit
 {
@@ -6,9 +7,14 @@ namespace WieFit
     {
         static void Main(string[] args)
         {
-            
         }
 
+        static void CreatePlanning()
+        {
+            Planning planning = new Planning();
+            planning.CreatePlanning();
+        }
+        
         static void CreateUser()
         {
             Console.Write("Enter your Username: ");
@@ -101,5 +107,25 @@ namespace WieFit
                     break;
             }
         }
+
+        static void CreateActivity()
+        {
+            Organizer O = new Organizer("username","name","mail","adress","telefoonnummer", 0,'M');
+            Console.WriteLine("Enter Activity name...");
+            string Name = Console.ReadLine();
+
+            Console.WriteLine("Enter Activiry Description");
+            string Description = Console.ReadLine();
+
+            Common.Activity activity = new Common.Activity(Name,Description);
+            if (O.CreateActivity(activity))
+            {
+                Console.Write("Succes");
+            }
+            else
+            {
+                Console.Write("Failed");
+            }
+        } 
     }
 }
