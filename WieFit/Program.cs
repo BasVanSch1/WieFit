@@ -6,7 +6,7 @@ namespace WieFit
     {
         static void Main(string[] args)
         {
-            CreateUser();
+            AddLocation();
         }
 
         static void CreateUser()
@@ -100,6 +100,39 @@ namespace WieFit
                     Console.WriteLine("uh-oh, dit zou niet mogen gebeuren :P");
                     break;
             }
+        }
+
+        static void AddLocation() 
+        {
+            Console.Write("Enter location name: ");
+            string _locationname = Console.ReadLine();
+
+            Console.Write("Enter location adress: ");
+            string _locationadress = Console.ReadLine();
+
+            Console.Write("Enter postalcode: ");
+            string _postalcode = Console.ReadLine();
+
+            Console.Write("Enter city: ");
+            string _city = Console.ReadLine();
+
+            Console.Write("Enter country: ");
+            string _country = Console.ReadLine();
+            Location location = new Location(_locationname, _locationadress, _postalcode, _city, _country);
+            
+            if (location.AddLocation())
+            {
+                Console.WriteLine("SUCCESS@?@");
+            } else
+            {
+                Console.WriteLine("FAILED..");
+            }
+            
+        }
+
+        static void DeleteLocation() 
+        {
+
         }
     }
 }

@@ -8,6 +8,7 @@ using WieFit.Common.DAL;
 
 internal class Location
 {
+    private readonly DAL database = DAL.Instance;
     public int id { get; set; }
     public string name { get; set; }
     public string adress { get; set; }
@@ -35,31 +36,13 @@ internal class Location
         country = _country;
     }
 
-    public static void AddLocation()
+    public bool AddLocation()
     {
-
-        Console.Write("Enter location name: ");
-        string _locationname = (Console.ReadLine());
-
-        Console.Write("Enter location adress: ");
-        string _locationadress = Console.ReadLine();
-
-        Console.Write("Enter postalcode: ");
-        string _postalcode = Console.ReadLine();
-
-        Console.Write("Enter city: ");
-        string _city = Console.ReadLine();
-
-        Console.Write("Enter country: ");
-        string _country = Console.ReadLine();
-        Location location = new Location(
-            _locationname,
-            _locationadress,
-            _postalcode,
-            _city,
-            _country
-            );
-
+        return database.Addlocation(this);
+    }
+    public bool DeleteLocation()
+    {
+        return database.DeleteLocation(this);
     }
 
 

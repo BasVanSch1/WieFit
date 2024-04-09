@@ -64,16 +64,15 @@ namespace WieFit.Common.DAL
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string query = "INSERT INTO LOCATION (locationid, name, adress, postalcode, ountry) VALUES (@location_id, @name, @adress @postalcode, @country)";
+                    string query = "INSERT INTO LOCATION (name, adress, postalcode, country) VALUES (@name, @adress, @postalcode, @country);";
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
                         {
-                            command.Parameters.AddWithValue("@Location_id", location.id);
                             command.Parameters.AddWithValue("@name", location.name);
-                            command.Parameters.AddWithValue("@adress,", location.adress);
-                            command.Parameters.AddWithValue("@Postalcode", location.postalcode);
-                            command.Parameters.AddWithValue("@Country", location.country);
+                            command.Parameters.AddWithValue("@adress", location.adress);
+                            command.Parameters.AddWithValue("@postalcode", location.postalcode);
+                            command.Parameters.AddWithValue("@country", location.country);
 
                             command.ExecuteNonQuery();
 
@@ -83,7 +82,7 @@ namespace WieFit.Common.DAL
                 }
 
             }
-            catch (Exception) // Catch all, nu tijdelijk geen error output. Als GUI wordt gemaakt zal er een pop-up komen met de error.
+            catch (Exception ex)
             {
                 return false;
             }
@@ -115,7 +114,7 @@ namespace WieFit.Common.DAL
                 return true;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }
