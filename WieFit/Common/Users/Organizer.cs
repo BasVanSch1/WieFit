@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace WieFit.Common.Users
 {
-    internal class Student : User
+    internal class Organizer : User
     {
-        public Student(string _username, string _name, string _email, string _adress, string _phoneNumber, int _age, char _gender)
-            : base (_username, _name, _email, _adress, _phoneNumber, _age, _gender)
-        { }
+
+        public Organizer(string _username, string _name, string _email, string _adress, string _phoneNumber, int _age, char _gender) :
+            base (_username, _name, _email, _adress, _phoneNumber, _age, _gender)
+        {}
 
         public override bool CreateUser(string _password)
         {
-            return database.CreateUser(this, _password, 'S');
+            return database.CreateUser(this, _password, 'O');
         }
 
         public override bool SignIn()
