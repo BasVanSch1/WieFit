@@ -6,7 +6,7 @@ namespace WieFit
     {
         static void Main(string[] args)
         {
-            CreateUser();
+            
         }
 
         static void CreateUser()
