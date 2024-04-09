@@ -1,6 +1,6 @@
 namespace WieFit.Common
 {
-    internal class PlannedActivity: Activity
+    internal class PlannedActivity
     {
         //.
     }

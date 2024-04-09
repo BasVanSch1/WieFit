@@ -7,6 +7,7 @@ namespace WieFit
     {
         static void Main(string[] args)
         {
+            AddLocation();
         }
 
         static void CreateUser()
