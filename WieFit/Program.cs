@@ -6,7 +6,9 @@ namespace WieFit
     {
         static void Main(string[] args)
         {
-
+            Location.AddLocation();
         }
+
+        
     }
 }
