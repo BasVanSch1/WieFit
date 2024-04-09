@@ -1,4 +1,5 @@
-﻿using WieFit.Common.Users;
+﻿using WieFit.Common;
+using WieFit.Common.Users;
 
 namespace WieFit
 {
@@ -6,9 +7,16 @@ namespace WieFit
     {
         static void Main(string[] args)
         {
+            CreatePlanning();
             CreateUser();
         }
 
+        static void CreatePlanning()
+        {
+            Planning planning = new Planning();
+            planning.CreatePlanning();
+        }
+        
         static void CreateUser()
         {
             Console.Write("Enter your Username: ");
