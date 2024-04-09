@@ -117,6 +117,7 @@ namespace WieFit.Common.DAL
             catch (Exception ex) {
               return false;
             }
+            return true;
         }
 
         public bool DeleteLocation(Location location)
