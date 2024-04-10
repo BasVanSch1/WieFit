@@ -186,5 +186,70 @@ namespace WieFit.Common.DAL
             }
             return true;
         }
+        public bool AddActivityToPlanning(PlannedActivity plannedactivity, Planning planning)
+        {
+            try
+            { 
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string query = $@"INSERT INTO PLANNEDACTIVITY(planningid, activityid, startdatetime, enddatetime, coachusername) VALUES({planning.Id},{plannedactivity.Id},{plannedactivity.StartTime},{plannedactivity.EndTime},{plannedactivity.Coach.Username})";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand sqlCommand = new SqlCommand(query,sqlConnection,sqlTransaction ))
+                        {
+                            sqlCommand.ExecuteNonQuery();
+                            sqlTransaction.Commit();
+                        }
+                    }
+                }
+            }catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+        public List<Activity>? GetAllActivities()
+        {
+            List<Activity> activities = new List<Activity>();
+            try
+            {
+                using(SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    
+                    string query = "SELECT activityid, name, description FROM ACTIVITY";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction()) // wss niet eens nodig maarja..
+                    {
+                        using(SqlCommand sqlCommand = new SqlCommand(query,sqlConnection, sqlTransaction))
+                        {
+                            using(SqlDataReader sqlDataReader = sqlCommand.ExecuteReader())
+                            {
+                                if (!sqlDataReader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (sqlDataReader.Read())
+                                {
+                                    int _id = (int)sqlDataReader["activityid"];
+                                    string _name = (string)sqlDataReader["name"];
+                                    string _description = (string)sqlDataReader["description"];
+
+                                    activities.Add(new Activity(_id, _name, _description));
+                                }
+                            }
+                        }
+                        sqlTransaction.Commit();
+                    }
+                }
+            }catch (Exception)
+            { 
+                return null;
+            }
+            return activities;
+        }
     }
 }

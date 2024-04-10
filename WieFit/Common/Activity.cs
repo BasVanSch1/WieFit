@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WieFit.Common
 {
-    internal abstract class Activity
+    internal class Activity
     {
         public int Id { get; set; }
         public string Name { get; set; }
