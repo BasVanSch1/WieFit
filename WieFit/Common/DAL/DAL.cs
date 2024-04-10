@@ -93,27 +93,33 @@ namespace WieFit.Common.DAL
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string query = "INSERT INTO LOCATION (name, adress, postalcode, country) VALUES (@name, @adress, @postalcode, @country);";
+                    string query = "INSERT INTO LOCATION (planningid, name, adress, postalcode, city, country) VALUES (@planningid, @name, @adress, @postalcode, @city, @country);";
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
                         {
+                            command.Parameters.AddWithValue("@planningid", location.Planning.Id);
                             command.Parameters.AddWithValue("@name", location.Name);
-                            command.Parameters.AddWithValue("@adress", location.Adress);
+                            command.Parameters.AddWithValue("@adress", location.Address);
                             command.Parameters.AddWithValue("@postalcode", location.Postalcode);
+                            command.Parameters.AddWithValue("@city", location.City);
                             command.Parameters.AddWithValue("@country", location.Country);
 
                             command.ExecuteNonQuery();
+                            
+                            command.CommandText = "SELECT CAST(@@Identity as INT);";
+                            var id = (int)command.ExecuteScalar();
+                            location.Id = id;
                           
                             sqlTransaction.Commit();
                         }
                     }
                 }
             } 
-            catch (Exception ex) {
-              return false;
+            catch (Exception ex)
+            {
+                return false;
             }
-
             return true;
         }
 
