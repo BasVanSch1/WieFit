@@ -161,11 +161,8 @@ namespace WieFit
             {
                 Console.Write("Failed");
             }
-        } 
-        static void ActivityInPlanning()
-        {
-            
         }
+      
         static void GetAllActivities()
         {
             Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
