@@ -1,4 +1,6 @@
-﻿using WieFit.Common;
+﻿using System.Runtime.InteropServices;
+using Azure.Core;
+using WieFit.Common;
 using WieFit.Common.Users;
 
 namespace WieFit
@@ -7,6 +9,7 @@ namespace WieFit
     {
         static void Main(string[] args)
         {
+            GetAllActivities();
         }
 
         static void CreateUser()
@@ -139,14 +142,14 @@ namespace WieFit
             Planning planning = new Planning();
             planning.CreatePlanning();
         }
-        
+
         static void CreateActivity()
         {
             Organizer O = new Organizer("username","name","mail","adress","telefoonnummer", 0,'M');
-            Console.WriteLine("Enter Activity name...");
+            Console.Write("Enter Activity name...");
             string Name = Console.ReadLine();
 
-            Console.WriteLine("Enter Activiry Description");
+            Console.Write("Enter Activity Description");
             string Description = Console.ReadLine();
 
             Common.Activity activity = new Common.Activity(Name,Description);
@@ -158,6 +161,17 @@ namespace WieFit
             {
                 Console.Write("Failed");
             }
-        } 
+        }
+      
+        static void GetAllActivities()
+        {
+            Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
+            List<Activity> activities = new List<Activity>(O.GetAllActivities());
+            Console.WriteLine("Activities:");
+            foreach (Activity a in activities)
+            {
+                Console.WriteLine($"Id: {a.Id} Name:{a.Name} Description: {a.Description} ");
+            }
+        }
     }
 }
