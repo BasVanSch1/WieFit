@@ -251,5 +251,55 @@ namespace WieFit.Common.DAL
             }
             return activities;
         }
+
+        public Activity GetActivity(int id)
+        {
+            try
+            {
+                using ( SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = @"SELECT * FROM ACTIVITY WHERE activityid = @activityid;";
+                    connection.Open();
+
+                    using ( SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@activityid", id);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                reader.Read();
+                                return MapActivity(reader);
+                            }
+                        }
+                    }
+                    {
+                        
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private Activity MapActivity(SqlDataReader reader)
+        {
+            try
+            {
+                Activity activity = new Activity(
+                    Convert.ToInt32(reader["activityid"]),
+                    reader["name"].ToString(),
+                    reader["description"].ToString()
+                );
+                return activity;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }
