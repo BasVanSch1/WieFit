@@ -1,4 +1,6 @@
-﻿using WieFit.Common;
+﻿using System.Runtime.InteropServices;
+using Azure.Core;
+using WieFit.Common;
 using WieFit.Common.Users;
 
 namespace WieFit
@@ -146,14 +148,14 @@ namespace WieFit
             Planning planning = new Planning();
             planning.CreatePlanning();
         }
-        
+
         static void CreateActivity()
         {
             Organizer O = new Organizer("username","name","mail","adress","telefoonnummer", 0,'M');
-            Console.WriteLine("Enter Activity name...");
+            Console.Write("Enter Activity name...");
             string Name = Console.ReadLine();
 
-            Console.WriteLine("Enter Activiry Description");
+            Console.Write("Enter Activity Description");
             string Description = Console.ReadLine();
 
             Common.Activity activity = new Common.Activity(Name,Description);
@@ -210,7 +212,30 @@ namespace WieFit
                     Console.ReadKey();
                 }
             }
-
+        }
+      
+        static void GetAllActivities()
+        {
+            Organizer O = new Organizer("username", "name", "email", "adress", "telefoonnummer", 0, 'M');
+            List<Activity> activities = new List<Activity>(O.GetAllActivities());
+            Console.WriteLine("Activities:");
+            foreach (Activity a in activities)
+            {
+                Console.WriteLine($"Id: {a.Id} Name:{a.Name} Description: {a.Description} ");
+            }
+        }
+        
+        static void GetActivity()
+        {
+            Console.Write("Enter an activity id:");
+            int id = Convert.ToInt32(Console.ReadLine());
+            Activity activity = Activity.GetActivity(id);
+            if (activity == null)
+            {
+                Console.WriteLine($"No Activity was found with id {id}");
+                return;
+            }
+            Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
         }
     }
 }

@@ -93,27 +93,33 @@ namespace WieFit.Common.DAL
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string query = "INSERT INTO LOCATION (name, adress, postalcode, country) VALUES (@name, @adress, @postalcode, @country);";
+                    string query = "INSERT INTO LOCATION (planningid, name, adress, postalcode, city, country) VALUES (@planningid, @name, @adress, @postalcode, @city, @country);";
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
                         {
-                            command.Parameters.AddWithValue("@name", location.name);
-                            command.Parameters.AddWithValue("@adress", location.adress);
-                            command.Parameters.AddWithValue("@postalcode", location.postalcode);
-                            command.Parameters.AddWithValue("@country", location.country);
+                            command.Parameters.AddWithValue("@planningid", location.Planning.Id);
+                            command.Parameters.AddWithValue("@name", location.Name);
+                            command.Parameters.AddWithValue("@adress", location.Address);
+                            command.Parameters.AddWithValue("@postalcode", location.Postalcode);
+                            command.Parameters.AddWithValue("@city", location.City);
+                            command.Parameters.AddWithValue("@country", location.Country);
 
                             command.ExecuteNonQuery();
+                            
+                            command.CommandText = "SELECT CAST(@@Identity as INT);";
+                            var id = (int)command.ExecuteScalar();
+                            location.Id = id;
                           
                             sqlTransaction.Commit();
                         }
                     }
                 }
             } 
-            catch (Exception ex) {
-              return false;
+            catch (Exception ex)
+            {
+                return false;
             }
-
             return true;
         }
 
@@ -130,7 +136,7 @@ namespace WieFit.Common.DAL
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
                         {
                             {
-                                command.Parameters.AddWithValue("@locationid", location.id);
+                                command.Parameters.AddWithValue("@locationid", location.Id);
                                 command.ExecuteNonQuery();
                               
                                 sqlTransaction.Commit();
@@ -180,7 +186,7 @@ namespace WieFit.Common.DAL
             }
             return true;
         }
-
+      
         public bool CheckPassword(string username, string password)
         {
             try
@@ -207,15 +213,14 @@ namespace WieFit.Common.DAL
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
                 return false;
             }
 
             return true;
-        }
-
+        }      
+      
         public User? GetUser(string username, string password)
         {
             User user = null;
@@ -257,13 +262,137 @@ namespace WieFit.Common.DAL
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
                 return null;
             }
 
             return user;
         }
+        
+      public bool PlanActivity(PlannedActivity plannedactivity, Planning planning)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string query = @"INSERT INTO PLANNEDACTIVITY(planningid, activityid, startdatetime, enddatetime, coachusername) VALUES(@planningid, @activityid,@starttime, @endtime,@coachusername)";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
+                        {
+                            sqlCommand.Parameters.AddWithValue("@planningid", planning.Id);
+                            sqlCommand.Parameters.AddWithValue("@activityid", plannedactivity.Id);
+                            sqlCommand.Parameters.AddWithValue("@starttime", plannedactivity.StartTime);
+                            sqlCommand.Parameters.AddWithValue("@endtime", plannedactivity.EndTime);
+                            sqlCommand.Parameters.AddWithValue("@coachusername", plannedactivity.Coach.Username);
+                            sqlCommand.ExecuteNonQuery();
+                            sqlTransaction.Commit();
+                        }
+                    }
+                }
+            }
+            catch (Exception)   
+            {
+                return false;
+            }
+            return true;
+        }
+      
+        public Activity GetActivity(int id)
+        {
+            try
+            {
+                using ( SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = @"SELECT * FROM ACTIVITY WHERE activityid = @activityid;";
+                    connection.Open();
+
+                    using ( SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@activityid", id);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                reader.Read();
+                                return MapActivity(reader);
+                            }
+                        }
+                    }
+                    {
+                        
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private Activity MapActivity(SqlDataReader reader)
+        {
+            try
+            {
+                Activity activity = new Activity(
+                    Convert.ToInt32(reader["activityid"]),
+                    reader["name"].ToString(),
+                    reader["description"].ToString()
+                );
+                return activity;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+      
+      public List<Activity>? GetAllActivities()
+        {
+            List<Activity> activities = new List<Activity>();
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+
+                    string query = "SELECT activityid, name, description FROM ACTIVITY";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction()) // wss niet eens nodig maarja..
+                    {
+                        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
+                        {
+                            using (SqlDataReader sqlDataReader = sqlCommand.ExecuteReader())
+                            {
+                                if (!sqlDataReader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (sqlDataReader.Read())
+                                {
+                                    int _id = (int)sqlDataReader["activityid"];
+                                    string _name = (string)sqlDataReader["name"];
+                                    string _description = (string)sqlDataReader["description"];
+
+                                    activities.Add(new Activity(_id, _name, _description));
+                                }
+                            }
+                        }
+                        sqlTransaction.Commit();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            return activities;
+        }
+      
     }
 }

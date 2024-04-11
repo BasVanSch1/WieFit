@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Identity.Client;
 
 namespace WieFit.Common.Users
 {
@@ -26,6 +27,14 @@ namespace WieFit.Common.Users
         public bool CreateActivity(Activity activity)
         {
             return database.CreateActivity(activity);
+        }
+        public bool ActivityInPlanning(PlannedActivity plannedactivity, Planning planning)
+        {
+            return database.AddActivityToPlanning(plannedactivity, planning);
+        }
+        public List<Activity> GetAllActivities()
+        {
+            return database.GetAllActivities();
         }
     }
 }
