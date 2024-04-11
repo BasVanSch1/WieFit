@@ -298,8 +298,7 @@ namespace WieFit.Common.DAL
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                return null;
             }
         }
     }
