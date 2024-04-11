@@ -31,6 +31,7 @@ namespace WieFit.Common.DAL
                             command.Parameters.AddWithValue("@username", user.Username);
                             command.Parameters.AddWithValue("@activityid", activity.Id);
                             command.Parameters.AddWithValue("@datetime", result.Date);
+                            command.Parameters.AddWithValue("@description", result.Description);
                             command.Parameters.AddWithValue("@result", result.Value);
                             command.ExecuteNonQuery();
 

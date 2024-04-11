@@ -16,6 +16,8 @@ namespace WieFit
             {
                 Login();
             }
+
+            AddResult();
         }
 
         static void CreateUser()
