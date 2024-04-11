@@ -14,7 +14,7 @@ namespace WieFit.Common.Users
 
         public bool CreateUser(string _password)
         {
-            return database.CreateUser(this, _password, 'S');
+            return userDAL.CreateUser(this, _password, 'S');
         }
 
         public bool UpdateUser()
