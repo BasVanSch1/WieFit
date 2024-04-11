@@ -24,12 +24,11 @@ namespace WieFit.Common.DAL
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string query = "INSERT INTO LOCATION (planningid, name, adress, postalcode, city, country) VALUES (@planningid, @name, @adress, @postalcode, @city, @country);";
+                    string query = "INSERT INTO LOCATION (name, adress, postalcode, city, country) VALUES (@name, @adress, @postalcode, @city, @country);";
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
                         {
-                            command.Parameters.AddWithValue("@planningid", location.Planning.Id);
                             command.Parameters.AddWithValue("@name", location.Name);
                             command.Parameters.AddWithValue("@adress", location.Address);
                             command.Parameters.AddWithValue("@postalcode", location.Postalcode);
@@ -83,5 +82,100 @@ namespace WieFit.Common.DAL
                 return false;
             }
         }
+
+        public List<Location> GetAllLocations()
+        {
+            List<Location> locations = new List<Location>();
+
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT locationid, name, address, postalcode, city, country  FROM LOCATION";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction()) // wss niet eens nodig maarja..
+                    {
+                        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
+                        {
+                            using (SqlDataReader sqlDataReader = sqlCommand.ExecuteReader())
+                            {
+                                if (!sqlDataReader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (sqlDataReader.Read())
+                                {
+                                    int _id = (int)sqlDataReader["locationid"];
+                                    string _name = (string)sqlDataReader["name"];
+                                    string _address = (string)sqlDataReader["address"];
+                                    string _postalcode = (string)sqlDataReader["postalcode"];
+                                    string _city = (string)sqlDataReader["city"];
+                                    string _country = (string)sqlDataReader["country"];
+
+                                    locations.Add(new Location(_id, _name, _address, _postalcode, _city, _country));
+                                }
+                            }
+                        }
+                        sqlTransaction.Commit();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                return null;
+            }
+            return locations;
+        }
+        public Location GetLocation(int id)
+        {
+            Location location = null;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = @"SELECT locationid, name, address, postalcode, city, country FROM LOCATION WHERE locationid = @locationid;";
+                    connection.Open();
+
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@locationid", id);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                reader.Read(); // Er hoeft maar 1x een locatie worden opgehaald.
+
+                                int _id = (int)reader["locationid"];
+                                string _name = (string)reader["name"];
+                                string _address = (string)reader["address"];
+                                string _postalcode = (string)reader["postalcode"];
+                                string _city = (string)reader["city"];
+                                string _country = (string)reader["country"];
+
+                                location = new Location(_id, _name, _address, _postalcode, _city, _country);
+
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                return null;
+            }
+            return location;
+        }
+
+
     }
 }

@@ -17,10 +17,9 @@ internal class Location
     public string Postalcode { get; set; }
     public string City { get; set; }
     public string Country { get; set; }
-    public Planning Planning { get; set; }
 
 
-    public Location(int _id, string _name, string address, string _postalcode, string _city, string _country, Planning planning)
+    public Location(int _id, string _name, string address, string _postalcode, string _city, string _country)
     {
         Id = _id;
         Name = _name;
@@ -28,7 +27,6 @@ internal class Location
         Postalcode = _postalcode;
         City = _city;
         Country = _country;
-        Planning = planning;
     }
 
     public Location(string _name, string address, string _postalcode, string _city, string _country)
@@ -38,12 +36,10 @@ internal class Location
         Postalcode = _postalcode;
         City = _city;
         Country = _country;
-        Planning = new Planning();
     }
 
     public bool AddLocation()
     {
-        if (!Planning.CreatePlanning()) return false;
         return locationDAL.Addlocation(this);
     }
     public bool DeleteLocation()

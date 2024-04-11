@@ -44,32 +44,34 @@ namespace WieFit.Common.DAL
 
             return true;
         }
-        public bool PlanActivity(PlannedActivity plannedactivity, Planning planning)
+        public bool PlanActivity(PlannedActivity plannedactivity, Location location)
         {
             try
             {
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
-                    string query = @"INSERT INTO PLANNEDACTIVITY(planningid, activityid, startdatetime, enddatetime, coachusername) VALUES(@planningid, @activityid,@starttime, @endtime,@coachusername)";
+                    string query = @"INSERT INTO PLANNEDACTIVITY(locationid, activityid, startdatetime, enddatetime, coachusername) VALUES(@locationid, @activityid, @starttime, @endtime, @coachusername)";
                     sqlConnection.Open();
 
                     using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
                     {
                         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
                         {
-                            sqlCommand.Parameters.AddWithValue("@planningid", planning.Id);
+                            sqlCommand.Parameters.AddWithValue("@locationid", location.Id);
                             sqlCommand.Parameters.AddWithValue("@activityid", plannedactivity.Id);
                             sqlCommand.Parameters.AddWithValue("@starttime", plannedactivity.StartTime);
                             sqlCommand.Parameters.AddWithValue("@endtime", plannedactivity.EndTime);
                             sqlCommand.Parameters.AddWithValue("@coachusername", plannedactivity.Coach.Username);
                             sqlCommand.ExecuteNonQuery();
+
                             sqlTransaction.Commit();
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw ex;
                 return false;
             }
             return true;
@@ -148,7 +150,6 @@ namespace WieFit.Common.DAL
             }
             return activities;
         }
-
         private Activity MapActivity(SqlDataReader reader)
         {
             try
@@ -165,6 +166,5 @@ namespace WieFit.Common.DAL
                 return null;
             }
         }
-
     }
 }

@@ -148,12 +148,6 @@ namespace WieFit
             
         }
 
-        static void CreatePlanning()
-        {
-            Planning planning = new Planning();
-            planning.CreatePlanning();
-        }
-
         static void CreateActivity()
         {
             Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
@@ -223,7 +217,7 @@ namespace WieFit
         static void GetAllActivities()
         {
             Organizer O = new Organizer("username", "name", "email", "adress", "telefoonnummer", 0, 'M');
-            List<Activity> activities = new List<Activity>(O.GetAllActivities());
+            List<Activity>? activities = O.GetAllActivities();
             Console.WriteLine("Activities:");
             foreach (Activity a in activities)
             {
@@ -242,46 +236,6 @@ namespace WieFit
                 return;
             }
             Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
-        }
-
-        static void PlanActivity()
-        {
-            Planning planning = new Planning();
-            Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
-            Coach C = new Coach("username", "name", "email", "adress", "telefoon", 0, 'M');
-            GetAllActivities();
-            Console.Write("Select Activity on Id: ");
-            int id;
-            DateTime starttime;
-            DateTime endtime;
-            while (!Int32.TryParse(Console.ReadLine(), out id))
-            {
-                Console.WriteLine("Please enter a correct Id..");
-                Console.Write("Select Activity on Id: ");
-            }
-            Activity activity = Activity.GetActivity(id);
-            Console.Write("Enter starttime: ");
-            while (!DateTime.TryParse(Console.ReadLine(), out starttime))
-            {
-                Console.WriteLine("Please enter a correct Date.");
-                Console.Write("Enter starttime: ");
-            }
-            Console.Write("Enter endtime: ");
-            while (!DateTime.TryParse(Console.ReadLine(), out endtime))
-            {
-                Console.WriteLine("Please enter a correct Date.");
-                Console.Write("Enter endtime: ");
-            }
-
-            PlannedActivity plannedactivity = new PlannedActivity(id, activity.Name, activity.Description, starttime, endtime, C);
-            if (O.PlanActivity(plannedactivity, planning))
-            {
-                Console.WriteLine("Succes");
-            }
-            else
-            {
-                Console.WriteLine("Failed");
-            }
         }
 
         static void AddResult()
@@ -321,6 +275,81 @@ namespace WieFit
             else
             {
                 Console.WriteLine("FAILED...");
+            }
+        }
+
+        static void GetAllLocations()
+        {
+            Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
+            List<Location> locations = O.GetAllLocations();
+            if (locations == null)
+            {
+                Console.WriteLine("There are no Locations available.");
+                return;
+            }
+            else
+            {
+                foreach (Location l in locations)
+                {
+                    Console.WriteLine($"Locationid: {l.Id}| name: {l.Name} | address: {l.Address} | postalcode: {l.Postalcode} | city: {l.City} | country: {l.Country}");
+                }
+            }
+        }
+        static void PlanActivity()
+        {
+            Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
+            Coach C = new Coach("Coach", "name", "email", "address", "telefoon", 0, 'M');
+
+            GetAllLocations();
+
+            int lId;
+
+            Console.Write("Enter locationId: ");
+            while (!Int32.TryParse(Console.ReadLine(), out lId))
+            {
+                Console.WriteLine("Please Enter correct Id");
+                Console.Write("Enter locationId: ");
+            }
+            Location location = O.GetLocation(lId);
+
+            GetAllActivities();
+
+            Console.Write("Select Activity on Id: ");
+
+            int aId;
+            DateTime starttime;
+            DateTime endtime;
+
+            while (!Int32.TryParse(Console.ReadLine(), out aId))
+            {
+                Console.WriteLine("Please enter a correct Id..");
+                Console.Write("Select Activity on Id: ");
+            }
+
+            Activity activity = Activity.GetActivity(aId);
+
+            Console.Write("Enter starttime: ");
+            while (!DateTime.TryParse(Console.ReadLine(), out starttime))
+            {
+                Console.WriteLine("Please enter a correct Date.");
+                Console.Write("Enter starttime: ");
+            }
+
+            Console.Write("Enter endtime: ");
+            while (!DateTime.TryParse(Console.ReadLine(), out endtime))
+            {
+                Console.WriteLine("Please enter a correct Date.");
+                Console.Write("Enter endtime: ");
+            }
+
+            PlannedActivity plannedactivity = new PlannedActivity(aId, activity.Name, activity.Description, starttime, endtime, C);
+            if (O.PlanActivity(plannedactivity, location))
+            {
+                Console.WriteLine("Succes");
+            }
+            else
+            {
+                Console.WriteLine("Failed");
             }
         }
     }

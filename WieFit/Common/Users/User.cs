@@ -10,6 +10,7 @@ namespace WieFit.Common.Users
     internal class User
     {
         protected readonly UserDAL userDAL = UserDAL.Instance;
+        protected readonly LocationDAL locationDAL = LocationDAL.Instance;
 
         public string Username { get; private set; }
         public string Name { get; private set; }
@@ -28,6 +29,10 @@ namespace WieFit.Common.Users
             PhoneNumber = _phoneNumber;
             Age = _age;
             Gender = _gender;
+        }
+        public List<Location>? GetAllLocations()
+        {
+            return locationDAL.GetAllLocations();
         }
     }
 }

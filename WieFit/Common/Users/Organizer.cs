@@ -29,13 +29,19 @@ namespace WieFit.Common.Users
         {
             return activityDAL.CreateActivity(activity);
         }
-        public bool PlanActivity(PlannedActivity plannedactivity, Planning planning)
+        public bool PlanActivity(PlannedActivity plannedactivity, Location location)
         {
-            return activityDAL.PlanActivity(plannedactivity, planning);
+            return activityDAL.PlanActivity(plannedactivity, location);
         }
-        public List<Activity> GetAllActivities()
+        public List<Activity>? GetAllActivities()
         {
             return activityDAL.GetAllActivities();
         }
+        public Location GetLocation(int id)
+        {
+            return locationDAL.GetLocation(id);
+        }
+
+
     }
 }
