@@ -11,7 +11,7 @@ namespace WieFit.Common.DAL
     {
         private static readonly PlanningDAL instance = new PlanningDAL();
 
-        public static UsePlanningDALrDAL Instance { get { return instance; } }
+        public static PlanningDAL Instance { get { return instance; } }
 
         static PlanningDAL() { }
         private PlanningDAL() { }

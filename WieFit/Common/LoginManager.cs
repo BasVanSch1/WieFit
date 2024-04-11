@@ -10,7 +10,7 @@ namespace WieFit.Common
 {
     internal class LoginManager
     {
-        private readonly DAL.DAL database = DAL.DAL.Instance;
+        private readonly UserDAL userDAL = UserDAL.Instance;
 
         public LoginManager()
         {
@@ -19,14 +19,14 @@ namespace WieFit.Common
 
         private bool CheckPassword(string username, string password)
         {
-            return database.CheckPassword(username, password);
+            return userDAL.CheckPassword(username, password);
         }
 
         public User? GetUser(string username, string password)
         {
             if (CheckPassword(username, password))
             {
-                User? user = database.GetUser(username, password);
+                User? user = userDAL.GetUser(username, password);
                 if (user != null)
                 {
                     return user;

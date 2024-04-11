@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WieFit.Common.DAL;
 
 namespace WieFit.Common
 {
     internal class Planning
     {
-        protected readonly DAL.DAL database = DAL.DAL.Instance;
+        protected readonly PlanningDAL planningDAL = PlanningDAL.Instance;
         public int Id { get; set; }
         public bool IsActive { get; set; }
         public List<PlannedActivity> Activities { get; set; }
@@ -29,7 +30,7 @@ namespace WieFit.Common
 
         public bool CreatePlanning()
         {
-            return database.CreatePlanning(this);
+            return planningDAL.CreatePlanning(this);
         }
     }
 }

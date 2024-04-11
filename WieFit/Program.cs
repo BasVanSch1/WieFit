@@ -281,5 +281,45 @@ namespace WieFit
                 Console.WriteLine("Failed");
             }
         }
+
+        static void AddResult()
+        {
+            if (LoggedInUser == null)
+            {
+                return;
+            }
+
+            Activity activity = Activity.GetActivity(1);
+
+            Console.Write("When is this result made? enter(YYYY/MM/DD HH:MM:SS): ");
+            DateTime date;
+            while (!DateTime.TryParse(Console.ReadLine(), out date))
+            {
+                Console.WriteLine("Invalid Date...");
+                Console.Write("When is this result made? enter(YYYY/MM/DD HH:MM:SS): ");
+            }
+
+            Console.Write("Add result description: ");
+            string description = Console.ReadLine();
+
+            Console.WriteLine("Result value (only integers) : ");
+            float result;
+            while (!float.TryParse(Console.ReadLine(), out result))
+            {
+                Console.WriteLine("Invalid value...");
+                Console.WriteLine("Result value (only integers) : ");
+            }
+
+            Result newresult = new Result(date, description, result);
+
+            if (newresult.AddResult(LoggedInUser, activity))
+            {
+                Console.WriteLine("SUCCESS!");
+            }
+            else
+            {
+                Console.WriteLine("FAILED...");
+            }
+        }
     }
 }
