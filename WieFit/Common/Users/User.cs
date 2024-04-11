@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WieFit.Common.DAL;
 
 namespace WieFit.Common.Users
 {
     internal class User
     {
-        protected readonly DAL.DAL database = DAL.DAL.Instance;
+        protected readonly UserDAL userDAL = UserDAL.Instance;
 
         public string Username { get; private set; }
         public string Name { get; private set; }
