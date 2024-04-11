@@ -13,22 +13,12 @@ namespace WieFit.Common.Users
             base (_username, _name, _email, _adress, _phoneNumber, _age, _gender)
         {}
 
-        public override bool CreateUser(string _password)
+        public bool CreateUser(string _password)
         {
             return database.CreateUser(this, _password, 'O');
         }
 
-        public override bool SignIn()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool SignOut()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool UpdateUser()
+        public bool UpdateUser()
         {
             throw new NotImplementedException();
         }

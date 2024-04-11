@@ -57,7 +57,7 @@ namespace WieFit.Common.DAL
             return true;
         }
   
-        public bool CreateActivity(Common.Activity activity)
+        public bool CreateActivity(Activity activity)
         {
             try
             {
@@ -113,6 +113,8 @@ namespace WieFit.Common.DAL
             catch (Exception ex) {
               return false;
             }
+
+            return true;
         }
 
         public bool DeleteLocation(Location location)
@@ -177,6 +179,91 @@ namespace WieFit.Common.DAL
                 return false;
             }
             return true;
+        }
+
+        public bool CheckPassword(string username, string password)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string userStatement = @"SELECT COUNT(username) FROM USERS WHERE username = @username and password = @password;";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand cmd = new SqlCommand(userStatement, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@username", username);
+                            cmd.Parameters.AddWithValue("@password", password);
+
+                            int count = (int)cmd.ExecuteScalar();
+
+                            if (count != 1)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                return false;
+            }
+
+            return true;
+        }
+
+        public User? GetUser(string username, string password)
+        {
+            User user = null;
+
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string userStatement = @"SELECT username, name, email, address, phonenumber, age, gender FROM USERS WHERE username = @username and password = @password;";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand cmd = new SqlCommand(userStatement, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@username", username);
+                            cmd.Parameters.AddWithValue("@password", password);
+
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                reader.Read(); // Er hoeft maar 1x een user worden opgehaald.
+
+                                string _username = (string)reader["username"];
+                                string _name = (string)reader["name"];
+                                string _email = (string)reader["email"];
+                                string _address = (string)reader["address"];
+                                string _phonenumber = (string)reader["phonenumber"];
+                                int _age = (int)reader["age"];
+                                char _gender = reader["gender"].ToString().ToCharArray().First();
+
+                                user = new User(_username, _name, _email, _address, _phonenumber, _age, _gender);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                return null;
+            }
+
+            return user;
         }
     }
 }
