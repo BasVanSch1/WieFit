@@ -301,7 +301,7 @@ namespace WieFit.Common.DAL
             return true;
         }
       
-        public Activity GetActivity(int id)
+      public Activity GetActivity(int id)
         {
             try
             {
@@ -334,7 +334,7 @@ namespace WieFit.Common.DAL
             }
         }
 
-        private Activity MapActivity(SqlDataReader reader)
+      private Activity MapActivity(SqlDataReader reader)
         {
             try
             {
