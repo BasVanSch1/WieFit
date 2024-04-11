@@ -251,5 +251,23 @@ namespace WieFit.Common.DAL
             }
             return activities;
         }
+
+        private Activity MapActivity(SqlDataReader reader)
+        {
+            try
+            {
+                Activity activity = new Activity(
+                    Convert.ToInt32(reader["activityid"]),
+                    reader["name"].ToString(),
+                    reader["description"].ToString()
+                );
+                return activity;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }
