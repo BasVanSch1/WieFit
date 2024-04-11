@@ -237,5 +237,45 @@ namespace WieFit
             }
             Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
         }
+
+        static void PlanActivity()
+        {
+            Planning planning = new Planning();
+            Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
+            Coach C = new Coach("username", "name", "email", "adress", "telefoon", 0, 'M');
+            GetAllActivities();
+            Console.Write("Select Activity on Id: ");
+            int id;
+            DateTime starttime;
+            DateTime endtime;
+            while (!Int32.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("Please enter a correct Id..");
+                Console.Write("Select Activity on Id: ");
+            }
+            Activity activity = Activity.GetActivity(id);
+            Console.Write("Enter starttime: ");
+            while (!DateTime.TryParse(Console.ReadLine(), out starttime))
+            {
+                Console.WriteLine("Please enter a correct Date.");
+                Console.Write("Enter starttime: ");
+            }
+            Console.Write("Enter endtime: ");
+            while (!DateTime.TryParse(Console.ReadLine(), out endtime))
+            {
+                Console.WriteLine("Please enter a correct Date.");
+                Console.Write("Enter endtime: ");
+            }
+
+            PlannedActivity plannedactivity = new PlannedActivity(id, activity.Name, activity.Description, starttime, endtime, C);
+            if (O.PlanActivity(plannedactivity, planning))
+            {
+                Console.WriteLine("Succes");
+            }
+            else
+            {
+                Console.WriteLine("Failed");
+            }
+        }
     }
 }
