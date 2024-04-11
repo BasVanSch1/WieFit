@@ -27,7 +27,7 @@ namespace WieFit.Common
             Description = _Description;
         }
 
-        public static Activity GetActivity(int id)
+        public Activity GetActivity(int id)
         {
             return activityDAL.GetActivity(id);
         }
