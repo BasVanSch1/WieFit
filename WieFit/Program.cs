@@ -179,6 +179,11 @@ namespace WieFit
             Console.Write("Enter an activity id:");
             int id = Convert.ToInt32(Console.ReadLine());
             Activity activity = Activity.GetActivity(id);
+            if (activity == null)
+            {
+                Console.WriteLine($"No Activity was found with id {id}");
+                return;
+            }
             Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
         }
     }
