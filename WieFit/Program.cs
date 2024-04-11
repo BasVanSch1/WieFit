@@ -146,139 +146,140 @@ namespace WieFit
             
         }
 
-        //static void CreatePlanning()
-        //{
-        //    Planning planning = new Planning();
-        //    planning.CreatePlanning();
-        //}
+        static void CreatePlanning()
+        {
+            Planning planning = new Planning();
+            planning.CreatePlanning();
+        }
 
-        //static void CreateActivity()
-        //{
-        //    Organizer O = new Organizer("username","name","mail","adress","telefoonnummer", 0,'M');
-        //    Console.Write("Enter Activity name...");
-        //    string Name = Console.ReadLine();
+        static void CreateActivity()
+        {
+            Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
+            Console.Write("Enter Activity name...");
+            string Name = Console.ReadLine();
 
-        //    Console.Write("Enter Activity Description");
-        //    string Description = Console.ReadLine();
+            Console.Write("Enter Activity Description");
+            string Description = Console.ReadLine();
 
-        //    Common.Activity activity = new Common.Activity(Name,Description);
-        //    if (O.CreateActivity(activity))
-        //    {
-        //        Console.Write("Succes");
-        //    }
-        //    else
-        //    {
-        //        Console.Write("Failed");
-        //    }
-        //} 
+            Common.Activity activity = new Common.Activity(Name, Description);
+            if (O.CreateActivity(activity))
+            {
+                Console.Write("Succes");
+            }
+            else
+            {
+                Console.Write("Failed");
+            }
+        }
 
-        //static void Login()
-        //{
-        //    if (loginManager == null)
-        //    {
-        //        loginManager = new LoginManager();
-        //    }
-        //    bool loggedIn = false;
+        static void Login()
+        {
+            if (loginManager == null)
+            {
+                loginManager = new LoginManager();
+            }
+            bool loggedIn = false;
 
-        //    while (!loggedIn)
-        //    {
-        //        Console.Clear();
-        //        Console.Write("Please enter your username: ");
-        //        string? username = Console.ReadLine();
-        //        while (username == null || username.Length <= 0)
-        //        {
-        //            Console.Write("Your username cannot be empty, please try again...");
-        //            Console.Write("Please enter your username: ");
-        //            username = Console.ReadLine();
-        //        }
+            while (!loggedIn)
+            {
+                Console.Clear();
+                Console.Write("Please enter your username: ");
+                string? username = Console.ReadLine();
+                while (username == null || username.Length <= 0)
+                {
+                    Console.Write("Your username cannot be empty, please try again...");
+                    Console.Write("Please enter your username: ");
+                    username = Console.ReadLine();
+                }
 
-        //        Console.Write("Please enter your password: ");
-        //        string? password = Console.ReadLine();
-        //        while (password == null || password.Length <= 0)
-        //        {
-        //            Console.Write("Your password cannot be empty, please try again...");
-        //            Console.Write("Please enter your password: ");
-        //            password = Console.ReadLine();
-        //        }
+                Console.Write("Please enter your password: ");
+                string? password = Console.ReadLine();
+                while (password == null || password.Length <= 0)
+                {
+                    Console.Write("Your password cannot be empty, please try again...");
+                    Console.Write("Please enter your password: ");
+                    password = Console.ReadLine();
+                }
 
-        //        User? user = loginManager.GetUser(username, password);
+                User? user = loginManager.GetUser(username, password);
 
-        //        if (user != null)
-        //        {
-        //            Console.WriteLine("Succesfully logged in.");
-        //            LoggedInUser = user;
-        //            loggedIn = true;
-        //        } else
-        //        {
-        //            Console.WriteLine("Login failed. Please try again.");
-        //            Console.WriteLine("Press any key to continue...");
-        //            Console.ReadKey();
-        //        }
-        //    }
-        //}
-      
-        //static void GetAllActivities()
-        //{
-        //    Organizer O = new Organizer("username", "name", "email", "adress", "telefoonnummer", 0, 'M');
-        //    List<Activity> activities = new List<Activity>(O.GetAllActivities());
-        //    Console.WriteLine("Activities:");
-        //    foreach (Activity a in activities)
-        //    {
-        //        Console.WriteLine($"Id: {a.Id} Name:{a.Name} Description: {a.Description} ");
-        //    }
-        //}
-        
-        //static void GetActivity()
-        //{
-        //    Console.Write("Enter an activity id:");
-        //    int id = Convert.ToInt32(Console.ReadLine());
-        //    Activity activity = Activity.GetActivity(id);
-        //    if (activity == null)
-        //    {
-        //        Console.WriteLine($"No Activity was found with id {id}");
-        //        return;
-        //    }
-        //    Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
-        //}
+                if (user != null)
+                {
+                    Console.WriteLine("Succesfully logged in.");
+                    LoggedInUser = user;
+                    loggedIn = true;
+                }
+                else
+                {
+                    Console.WriteLine("Login failed. Please try again.");
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                }
+            }
+        }
 
-        //static void PlanActivity()
-        //{
-        //    Planning planning = new Planning();
-        //    Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
-        //    Coach C = new Coach("username", "name", "email", "adress", "telefoon", 0, 'M');
-        //    GetAllActivities();
-        //    Console.Write("Select Activity on Id: ");
-        //    int id;
-        //    DateTime starttime;
-        //    DateTime endtime;
-        //    while (!Int32.TryParse(Console.ReadLine(), out id))
-        //    {
-        //        Console.WriteLine("Please enter a correct Id..");
-        //        Console.Write("Select Activity on Id: ");
-        //    }
-        //    Activity activity = Activity.GetActivity(id);
-        //    Console.Write("Enter starttime: ");
-        //    while (!DateTime.TryParse(Console.ReadLine(), out starttime))
-        //    {
-        //        Console.WriteLine("Please enter a correct Date.");
-        //        Console.Write("Enter starttime: ");
-        //    }
-        //    Console.Write("Enter endtime: ");
-        //    while (!DateTime.TryParse(Console.ReadLine(), out endtime))
-        //    {
-        //        Console.WriteLine("Please enter a correct Date.");
-        //        Console.Write("Enter endtime: ");
-        //    }
+        static void GetAllActivities()
+        {
+            Organizer O = new Organizer("username", "name", "email", "adress", "telefoonnummer", 0, 'M');
+            List<Activity> activities = new List<Activity>(O.GetAllActivities());
+            Console.WriteLine("Activities:");
+            foreach (Activity a in activities)
+            {
+                Console.WriteLine($"Id: {a.Id} Name:{a.Name} Description: {a.Description} ");
+            }
+        }
 
-        //    PlannedActivity plannedactivity = new PlannedActivity(id, activity.Name, activity.Description, starttime, endtime, C);
-        //    if (O.PlanActivity(plannedactivity, planning))
-        //    {
-        //        Console.WriteLine("Succes");
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Failed");
-        //    }
-        //}
+        static void GetActivity()
+        {
+            Console.Write("Enter an activity id:");
+            int id = Convert.ToInt32(Console.ReadLine());
+            Activity activity = Activity.GetActivity(id);
+            if (activity == null)
+            {
+                Console.WriteLine($"No Activity was found with id {id}");
+                return;
+            }
+            Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
+        }
+
+        static void PlanActivity()
+        {
+            Planning planning = new Planning();
+            Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
+            Coach C = new Coach("username", "name", "email", "adress", "telefoon", 0, 'M');
+            GetAllActivities();
+            Console.Write("Select Activity on Id: ");
+            int id;
+            DateTime starttime;
+            DateTime endtime;
+            while (!Int32.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("Please enter a correct Id..");
+                Console.Write("Select Activity on Id: ");
+            }
+            Activity activity = Activity.GetActivity(id);
+            Console.Write("Enter starttime: ");
+            while (!DateTime.TryParse(Console.ReadLine(), out starttime))
+            {
+                Console.WriteLine("Please enter a correct Date.");
+                Console.Write("Enter starttime: ");
+            }
+            Console.Write("Enter endtime: ");
+            while (!DateTime.TryParse(Console.ReadLine(), out endtime))
+            {
+                Console.WriteLine("Please enter a correct Date.");
+                Console.Write("Enter endtime: ");
+            }
+
+            PlannedActivity plannedactivity = new PlannedActivity(id, activity.Name, activity.Description, starttime, endtime, C);
+            if (O.PlanActivity(plannedactivity, planning))
+            {
+                Console.WriteLine("Succes");
+            }
+            else
+            {
+                Console.WriteLine("Failed");
+            }
+        }
     }
 }
