@@ -270,129 +270,129 @@ namespace WieFit.Common.DAL
             return user;
         }
         
-      public bool PlanActivity(PlannedActivity plannedactivity, Planning planning)
-        {
-            try
+        public bool PlanActivity(PlannedActivity plannedactivity, Planning planning)
             {
-                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                try
                 {
-                    string query = @"INSERT INTO PLANNEDACTIVITY(planningid, activityid, startdatetime, enddatetime, coachusername) VALUES(@planningid, @activityid,@starttime, @endtime,@coachusername)";
-                    sqlConnection.Open();
-
-                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                     {
-                        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
+                        string query = @"INSERT INTO PLANNEDACTIVITY(planningid, activityid, startdatetime, enddatetime, coachusername) VALUES(@planningid, @activityid,@starttime, @endtime,@coachusername)";
+                        sqlConnection.Open();
+
+                        using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
                         {
-                            sqlCommand.Parameters.AddWithValue("@planningid", planning.Id);
-                            sqlCommand.Parameters.AddWithValue("@activityid", plannedactivity.Id);
-                            sqlCommand.Parameters.AddWithValue("@starttime", plannedactivity.StartTime);
-                            sqlCommand.Parameters.AddWithValue("@endtime", plannedactivity.EndTime);
-                            sqlCommand.Parameters.AddWithValue("@coachusername", plannedactivity.Coach.Username);
-                            sqlCommand.ExecuteNonQuery();
+                            using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
+                            {
+                                sqlCommand.Parameters.AddWithValue("@planningid", planning.Id);
+                                sqlCommand.Parameters.AddWithValue("@activityid", plannedactivity.Id);
+                                sqlCommand.Parameters.AddWithValue("@starttime", plannedactivity.StartTime);
+                                sqlCommand.Parameters.AddWithValue("@endtime", plannedactivity.EndTime);
+                                sqlCommand.Parameters.AddWithValue("@coachusername", plannedactivity.Coach.Username);
+                                sqlCommand.ExecuteNonQuery();
+                                sqlTransaction.Commit();
+                            }
+                        }
+                    }
+                }
+                catch (Exception)   
+                {
+                    return false;
+                }
+                return true;
+            }
+      
+        public Activity GetActivity(int id)
+            {
+                try
+                {
+                    using ( SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        string query = @"SELECT * FROM ACTIVITY WHERE activityid = @activityid;";
+                        connection.Open();
+
+                        using ( SqlTransaction transaction = connection.BeginTransaction())
+                        {
+                            using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@activityid", id);
+
+                                using (SqlDataReader reader = command.ExecuteReader())
+                                {
+                                    reader.Read();
+                                    return MapActivity(reader);
+                                }
+                            }
+                        }
+                        {
+                        
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+
+        private Activity MapActivity(SqlDataReader reader)
+            {
+                try
+                {
+                    Activity activity = new Activity(
+                        Convert.ToInt32(reader["activityid"]),
+                        reader["name"].ToString(),
+                        reader["description"].ToString()
+                    );
+                    return activity;
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+            }
+      
+        public List<Activity>? GetAllActivities()
+            {
+                List<Activity> activities = new List<Activity>();
+                try
+                {
+                    using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                    {
+
+                        string query = "SELECT activityid, name, description FROM ACTIVITY";
+                        sqlConnection.Open();
+
+                        using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction()) // wss niet eens nodig maarja..
+                        {
+                            using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
+                            {
+                                using (SqlDataReader sqlDataReader = sqlCommand.ExecuteReader())
+                                {
+                                    if (!sqlDataReader.HasRows)
+                                    {
+                                        return null;
+                                    }
+
+                                    while (sqlDataReader.Read())
+                                    {
+                                        int _id = (int)sqlDataReader["activityid"];
+                                        string _name = (string)sqlDataReader["name"];
+                                        string _description = (string)sqlDataReader["description"];
+
+                                        activities.Add(new Activity(_id, _name, _description));
+                                    }
+                                }
+                            }
                             sqlTransaction.Commit();
                         }
                     }
                 }
-            }
-            catch (Exception)   
-            {
-                return false;
-            }
-            return true;
-        }
-      
-      public Activity GetActivity(int id)
-        {
-            try
-            {
-                using ( SqlConnection connection = new SqlConnection(connectionString))
+                catch (Exception)
                 {
-                    string query = @"SELECT * FROM ACTIVITY WHERE activityid = @activityid;";
-                    connection.Open();
-
-                    using ( SqlTransaction transaction = connection.BeginTransaction())
-                    {
-                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
-                        {
-                            command.Parameters.AddWithValue("@activityid", id);
-
-                            using (SqlDataReader reader = command.ExecuteReader())
-                            {
-                                reader.Read();
-                                return MapActivity(reader);
-                            }
-                        }
-                    }
-                    {
-                        
-                    }
+                    return null;
                 }
+                return activities;
             }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-      private Activity MapActivity(SqlDataReader reader)
-        {
-            try
-            {
-                Activity activity = new Activity(
-                    Convert.ToInt32(reader["activityid"]),
-                    reader["name"].ToString(),
-                    reader["description"].ToString()
-                );
-                return activity;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-      
-      public List<Activity>? GetAllActivities()
-        {
-            List<Activity> activities = new List<Activity>();
-            try
-            {
-                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-                {
-
-                    string query = "SELECT activityid, name, description FROM ACTIVITY";
-                    sqlConnection.Open();
-
-                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction()) // wss niet eens nodig maarja..
-                    {
-                        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
-                        {
-                            using (SqlDataReader sqlDataReader = sqlCommand.ExecuteReader())
-                            {
-                                if (!sqlDataReader.HasRows)
-                                {
-                                    return null;
-                                }
-
-                                while (sqlDataReader.Read())
-                                {
-                                    int _id = (int)sqlDataReader["activityid"];
-                                    string _name = (string)sqlDataReader["name"];
-                                    string _description = (string)sqlDataReader["description"];
-
-                                    activities.Add(new Activity(_id, _name, _description));
-                                }
-                            }
-                        }
-                        sqlTransaction.Commit();
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            return activities;
-        }
       
     }
 }
