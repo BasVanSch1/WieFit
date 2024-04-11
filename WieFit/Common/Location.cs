@@ -10,7 +10,7 @@ using WieFit.Common.DAL;
 
 internal class Location
 {
-    private readonly DAL database = DAL.Instance;
+    private readonly LocationDAL locationDAL = LocationDAL.Instance;
     public int Id { get; set; }
     public string Name { get; set; }
     public string Address { get; set; }
@@ -44,11 +44,11 @@ internal class Location
     public bool AddLocation()
     {
         if (!Planning.CreatePlanning()) return false;
-        return database.Addlocation(this);
+        return locationDAL.Addlocation(this);
     }
     public bool DeleteLocation()
     {
-        return database.DeleteLocation(this);
+        return locationDAL.DeleteLocation(this);
     }
 
 
