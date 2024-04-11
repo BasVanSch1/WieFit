@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WieFit.Common.DAL;
 
 namespace WieFit.Common
 {
     internal class Activity
     {
-        static protected readonly DAL.DAL database = DAL.DAL.Instance;
+        private readonly ActivityDAL activityDAL = ActivityDAL.Instance;
         
         public int Id { get; set; }
         public string Name { get; set; }
@@ -28,7 +29,7 @@ namespace WieFit.Common
 
         public static Activity GetActivity(int id)
         {
-            return database.GetActivity(id);
+            return activityDAL.GetActivity(id);
         }
     }
     
