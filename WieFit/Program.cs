@@ -7,9 +7,15 @@ namespace WieFit
 {
     internal class Program
     {
+        static LoginManager? loginManager = null;
+        static User? LoggedInUser = null;
+
         static void Main(string[] args)
         {
-            GetActivity();
+            while (LoggedInUser == null)
+            {
+                Login();
+            }
         }
 
         static void CreateUser()
@@ -161,11 +167,56 @@ namespace WieFit
             {
                 Console.Write("Failed");
             }
+        } 
+
+        static void Login()
+        {
+            if (loginManager == null)
+            {
+                loginManager = new LoginManager();
+            }
+            bool loggedIn = false;
+
+            while (!loggedIn)
+            {
+                Console.Clear();
+                Console.Write("Please enter your username: ");
+                string? username = Console.ReadLine();
+                while (username == null || username.Length <= 0)
+                {
+                    Console.Write("Your username cannot be empty, please try again...");
+                    Console.Write("Please enter your username: ");
+                    username = Console.ReadLine();
+                }
+
+                Console.Write("Please enter your password: ");
+                string? password = Console.ReadLine();
+                while (password == null || password.Length <= 0)
+                {
+                    Console.Write("Your password cannot be empty, please try again...");
+                    Console.Write("Please enter your password: ");
+                    password = Console.ReadLine();
+                }
+
+                User? user = loginManager.GetUser(username, password);
+
+                if (user != null)
+                {
+                    Console.WriteLine("Succesfully logged in.");
+                    LoggedInUser = user;
+                    loggedIn = true;
+                } else
+                {
+                    Console.WriteLine("Login failed. Please try again.");
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                }
+            }
         }
       
         static void GetAllActivities()
         {
-            Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
+            Organizer O = new Organizer("username", "name", "email", "adress", "telefoonnummer", 0, 'M');
             List<Activity> activities = new List<Activity>(O.GetAllActivities());
             Console.WriteLine("Activities:");
             foreach (Activity a in activities)
