@@ -28,9 +28,9 @@ namespace WieFit.Common.Users
         {
             return database.CreateActivity(activity);
         }
-        public bool ActivityInPlanning(PlannedActivity plannedactivity, Planning planning)
+        public bool PlanActivity(PlannedActivity plannedactivity, Planning planning)
         {
-            return database.AddActivityToPlanning(plannedactivity, planning);
+            return database.PlanActivity(plannedactivity, planning);
         }
         public List<Activity> GetAllActivities()
         {
