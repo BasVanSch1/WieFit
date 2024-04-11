@@ -269,6 +269,7 @@ namespace WieFit.Common.DAL
 
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
+                                reader.Read();
                                 return MapActivity(reader);
                             }
                         }
