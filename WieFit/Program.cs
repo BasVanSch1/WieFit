@@ -12,12 +12,13 @@ namespace WieFit
 
         static void Main(string[] args)
         {
-            while (LoggedInUser == null)
-            {
-                Login();
-            }
+            //while (LoggedInUser == null)
+            //{
+            //    Login();
+            //}
 
-            AddResult();
+            //AddResult();
+            PlanActivity();
         }
 
         static void CreateUser()
@@ -298,7 +299,6 @@ namespace WieFit
         static void PlanActivity()
         {
             Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
-            Coach C = new Coach("Coach", "name", "email", "address", "telefoon", 0, 'M');
 
             GetAllLocations();
 
@@ -328,21 +328,26 @@ namespace WieFit
 
             Activity activity = Activity.GetActivity(aId);
 
-            Console.Write("Enter starttime: ");
+            Console.Write("Enter starttime in format(YYYY-MM-DD HH:MM:SS) : ");
             while (!DateTime.TryParse(Console.ReadLine(), out starttime))
             {
                 Console.WriteLine("Please enter a correct Date.");
                 Console.Write("Enter starttime: ");
             }
 
-            Console.Write("Enter endtime: ");
+            Console.Write("Enter endtime in format(YYYY-MM-DD HH:MM:SS) : ");
             while (!DateTime.TryParse(Console.ReadLine(), out endtime))
             {
                 Console.WriteLine("Please enter a correct Date.");
                 Console.Write("Enter endtime: ");
             }
+            GetAllCoaches();
 
-            PlannedActivity plannedactivity = new PlannedActivity(aId, activity.Name, activity.Description, starttime, endtime, C);
+            Console.Write("Enter coach username: ");
+            string username = Console.ReadLine();
+            Coach coach = Coach.GetCoach(username);
+
+            PlannedActivity plannedactivity = new PlannedActivity(aId, activity.Name, activity.Description, starttime, endtime, coach);
             if (O.PlanActivity(plannedactivity, location))
             {
                 Console.WriteLine("Succes");
@@ -350,6 +355,35 @@ namespace WieFit
             else
             {
                 Console.WriteLine("Failed");
+            }
+            Console.WriteLine(plannedactivity);
+        }
+        static void GetAllCoaches()
+        {
+            Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
+            Console.WriteLine("Coaches");
+            if (O.GetAllCoaches() == null)
+            {
+                Console.WriteLine("there are no coaches");
+            }
+            else
+            {
+                foreach (Coach c in O.GetAllCoaches())
+                {
+                    Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Adress}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender} ");
+                }
+            }
+        }
+        static void GetCoach()
+        {
+            Console.Write("Enter coach username: ");
+            string username = Console.ReadLine();
+            Coach c = Coach.GetCoach(username); 
+            if (c == null) {
+                Console.WriteLine("coach is null");
+            }
+            else {
+                Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Adress}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender}");
             }
         }
     }

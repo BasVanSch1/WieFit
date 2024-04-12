@@ -136,6 +136,97 @@ namespace WieFit.Common.DAL
 
             return user;
         }
+        public List<Coach>? GetAllCoach()
+        {
+            List<Coach>? coaches = new List<Coach>();
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string query = @"SELECT username,name, email, address, phonenumber, age, gender FROM USERS WHERE type = 'C';";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
+                        {
+                            using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+                                while (reader.Read())
+                                {
+                                    string _username = (string)reader["username"];
+                                    string _name = (string)reader["name"];
+                                    string _email = (string)reader["email"];
+                                    string _address = (string)reader["address"];
+                                    string _phonenumber = (string)reader["phonenumber"];
+                                    int _age = (int)reader["age"];
+                                    char _gender = reader["gender"].ToString().ToCharArray().First();
+
+                                    coaches.Add(new Coach(_username, _name, _email, _address, _phonenumber, _age, _gender));
+                                }
+                            }
+                        }
+                        sqlTransaction.Commit();
+                    }
+                }
+            }catch (Exception ex)
+            {
+                throw ex;
+                return null;
+            }
+            return coaches;
+        }
+        public Coach? GetCoach(string username)
+        {
+            Coach? coach = null;
+            try
+            {
+                using(SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = @"SELECT username,name, email, address, phonenumber, age, gender FROM USERS WHERE type = 'C' AND username = @username; ";
+                    connection.Open();
+
+                    using(SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection,transaction))
+                        {
+                            command.Parameters.AddWithValue("@username", username);
+
+                            using(SqlDataReader reader = command.ExecuteReader()) 
+                            {
+                                
+                                if (reader.Read())
+                                {
+                                    string _username = (string)reader["username"];
+                                    string _name = (string)reader["name"];
+                                    string _email = (string)reader["email"];
+                                    string _address = (string)reader["address"];
+                                    string _phonenumber = (string)reader["phonenumber"];
+                                    int _age = (int)reader["age"];
+                                    char _gender = reader["gender"].ToString().ToCharArray().First();
+
+                                    coach = new Coach(_username, _name, _email, _address, _phonenumber, _age, _gender);
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            }
+                        }
+                        transaction.Commit();
+                    }
+                }
+            }catch (Exception ex)
+            {
+                throw ex;
+                return null;
+            }
+            return coach;
+        }
     }
 
     
