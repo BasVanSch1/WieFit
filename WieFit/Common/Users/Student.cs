@@ -8,8 +8,8 @@ namespace WieFit.Common.Users
 {
     internal class Student : User
     {
-        public Student(string _username, string _name, string _email, string _adress, string _phoneNumber, int _age, char _gender)
-            : base (_username, _name, _email, _adress, _phoneNumber, _age, _gender)
+        public Student(string _username, string _name, string _email, string _address, string _phoneNumber, int _age, char _gender)
+            : base (_username, _name, _email, _address, _phoneNumber, _age, _gender)
         { }
 
         public bool CreateUser(string _password)

@@ -24,13 +24,13 @@ namespace WieFit.Common.DAL
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string query = "INSERT INTO LOCATION (name, adress, postalcode, city, country) VALUES (@name, @adress, @postalcode, @city, @country);";
+                    string query = "INSERT INTO LOCATION (name, address, postalcode, city, country) VALUES (@name, @address, @postalcode, @city, @country);";
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
                         {
                             command.Parameters.AddWithValue("@name", location.Name);
-                            command.Parameters.AddWithValue("@adress", location.Address);
+                            command.Parameters.AddWithValue("@address", location.Address);
                             command.Parameters.AddWithValue("@postalcode", location.Postalcode);
                             command.Parameters.AddWithValue("@city", location.City);
                             command.Parameters.AddWithValue("@country", location.Country);
