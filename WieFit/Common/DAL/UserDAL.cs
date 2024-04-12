@@ -35,7 +35,7 @@ namespace WieFit.Common.DAL
                             cmd.Parameters.AddWithValue("@name", user.Name);
                             cmd.Parameters.AddWithValue("@email", user.Email);
                             cmd.Parameters.AddWithValue("@password", password);
-                            cmd.Parameters.AddWithValue("@address", user.Address);
+                            cmd.Parameters.AddWithValue("@address", user.Adress);
                             cmd.Parameters.AddWithValue("@phonenumber", user.PhoneNumber);
                             cmd.Parameters.AddWithValue("@age", user.Age);
                             cmd.Parameters.AddWithValue("@gender", user.Gender);
