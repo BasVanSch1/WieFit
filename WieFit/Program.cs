@@ -16,6 +16,8 @@ namespace WieFit
             {
                 Login();
             }
+
+            Menu();
         }
         static void CreateUser()
         {
@@ -171,7 +173,7 @@ namespace WieFit
             {
                 loginManager = new LoginManager();
             }
-            bool loggedIn = LoggedInUser == null;
+            bool loggedIn = LoggedInUser != null;
 
             while (!loggedIn)
             {
@@ -414,11 +416,11 @@ namespace WieFit
             while (inMenu)
             {
                 Console.Clear();
-                Console.Write(menuHeader);
+                Console.WriteLine(menuHeader);
 
                 foreach (KeyValuePair<int, KeyValuePair<string, Action>> pair in menuItems)
                 {
-                    Console.Write($"{pair.Key}) {pair.Value.Key}");
+                    Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
                 }
 
                 int choice = -1;
