@@ -11,16 +11,23 @@ namespace WieFit
         static LoginManager? loginManager = null;
         static User? LoggedInUser = null;
 
+        static string menuHeader = 
+            @"
+            ==========================================
+                __          ___      ______   _   
+                \ \        / (_)    |  ____(_) |  
+                 \ \  /\  / / _  ___| |__   _| |_ 
+                  \ \/  \/ / | |/ _ \  __| | | __|
+                   \  /\  /  | |  __/ |    | | |_ 
+                    \/  \/   |_|\___|_|    |_|\__|
+            ==========================================";
+
         static void Main(string[] args)
         {
-            while (LoggedInUser == null)
-            {
-                Login();
-            }
-
             Menu();
 
         }
+
         static void CreateUser()
         {
             Console.Write("Enter your Username: ");
@@ -113,7 +120,6 @@ namespace WieFit
                     break;
             }
         }
-
         static void AddLocation() 
         {
             Console.Write("Enter location name: ");
@@ -141,14 +147,12 @@ namespace WieFit
             }
             
         }
-
         static void DeleteLocation() 
         {
             Console.Write("What location would you like to delete?(Enter location id)");
             int locationid = Convert.ToInt32(Console.ReadLine());
             
         }
-
         static void CreateActivity()
         {
             Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
@@ -168,7 +172,6 @@ namespace WieFit
                 Console.Write("Failed");
             }
         }
-
         static void Login()
         {
             if (loginManager == null)
@@ -180,6 +183,7 @@ namespace WieFit
             while (!loggedIn)
             {
                 Console.Clear();
+                Console.WriteLine(menuHeader + "\n");
                 Console.Write("Please enter your username: ");
                 string? username = Console.ReadLine();
                 while (username == null || username.Length <= 0)
@@ -214,7 +218,6 @@ namespace WieFit
                 }
             }
         }
-
         static void GetAllActivities()
         {
             Organizer O = new Organizer("username", "name", "email", "adress", "telefoonnummer", 0, 'M');
@@ -225,7 +228,6 @@ namespace WieFit
                 Console.WriteLine($"Id: {a.Id} Name:{a.Name} Description: {a.Description} ");
             }
         }
-
         static void GetActivity()
         {
             Console.Write("Enter an activity id:");
@@ -238,7 +240,6 @@ namespace WieFit
             }
             Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
         }
-
         static void AddResult()
         {
             if (LoggedInUser == null)
@@ -499,15 +500,6 @@ namespace WieFit
         static void Menu()
         {
             bool inMenu = true;
-            string menuHeader = @"
-                ====================================
-                 __          ___      ______ _ _   
-                 \ \        / (_)    |  ____(_) |  
-                  \ \  /\  / / _  ___| |__   _| |_ 
-                   \ \/  \/ / | |/ _ \  __| | | __|
-                    \  /\  /  | |  __/ |    | | |_ 
-                     \/  \/   |_|\___|_|    |_|\__|
-                ====================================";
 
             Dictionary<int, KeyValuePair<string, Action>> menuItems = new()
             {
@@ -516,12 +508,13 @@ namespace WieFit
                 [2] = new KeyValuePair<string, Action>("Add result", AddResult),
             };
 
+            
+
             while (inMenu)
             {
-                if (LoggedInUser == null)
+                while (LoggedInUser == null)
                 {
-                    inMenu = false;
-                    break;
+                    Login();
                 }
 
                 Console.Clear();
