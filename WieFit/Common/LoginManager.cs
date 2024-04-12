@@ -35,5 +35,7 @@ namespace WieFit.Common
 
             return null;
         }
+
+        // GetUserType()
     }
 }
