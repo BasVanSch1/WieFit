@@ -431,5 +431,54 @@ namespace WieFit
 
             }
         }
+        static void Logout()
+        {
+            if (LoggedInUser == null)
+            {
+                Console.WriteLine("There is no logged in user..");
+                return;
+            }
+        }
+        static void Menu()
+        {
+            bool inMenu = true;
+            string menuHeader =
+                @"
+                ====================================
+                 __          ___      ______ _ _   
+                 \ \        / (_)    |  ____(_) |  
+                  \ \  /\  / / _  ___| |__   _| |_ 
+                   \ \/  \/ / | |/ _ \  __| | | __|
+                    \  /\  /  | |  __/ |    | | |_ 
+                     \/  \/   |_|\___|_|    |_|\__|
+                ====================================";
+
+            Dictionary<int, KeyValuePair<string, Action>> menuItems = new()
+            {
+                [99] = new KeyValuePair<string, Action>("Logout", Logout),
+                [1] = new KeyValuePair<string, Action>("Get all locations", GetAllLocations),
+                [2] = new KeyValuePair<string, Action>("Add result", AddResult),
+            };
+
+            while (inMenu)
+            {
+                Console.Clear();
+                Console.Write(menuHeader);
+
+                foreach (KeyValuePair<int, KeyValuePair<string, Action>> pair in menuItems)
+                {
+                    Console.Write($"{pair.Key}) {pair.Value.Key}");
+                }
+
+                int choice = -1;
+                Console.Write("Enter a menu item number: ");
+                while (!Int32.TryParse(Console.ReadLine(), out choice))
+                {
+                    Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                    Console.Write("Enter a menu item number: ");
+                }
+
+            }
+        }
     }
 }
