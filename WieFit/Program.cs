@@ -278,7 +278,6 @@ namespace WieFit
                 Console.WriteLine("FAILED...");
             }
         }
-
         static void GetAllLocations()
         {
             Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
