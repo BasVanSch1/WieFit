@@ -11,8 +11,8 @@ namespace WieFit.Common.Users
     internal class Organizer : User
     {
         private readonly ActivityDAL activityDAL = ActivityDAL.Instance;
-        public Organizer(string _username, string _name, string _email, string _adress, string _phoneNumber, int _age, char _gender) :
-            base (_username, _name, _email, _adress, _phoneNumber, _age, _gender)
+        public Organizer(string _username, string _name, string _email, string _address, string _phoneNumber, int _age, char _gender) :
+            base (_username, _name, _email, _address, _phoneNumber, _age, _gender)
         {}
 
         public bool CreateUser(string _password)
