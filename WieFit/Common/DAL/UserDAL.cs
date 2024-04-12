@@ -23,7 +23,7 @@ namespace WieFit.Common.DAL
             {
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
-                    string userStatement = @"INSERT INTO USERS (username, name, email, password, adress, phonenumber, age, gender, type) VALUES ( @username, @name, @email, @password, @adress, @phonenumber, @age, @gender, @type );";
+                    string userStatement = @"INSERT INTO USERS (username, name, email, password, address, phonenumber, age, gender, type) VALUES ( @username, @name, @email, @password, @address, @phonenumber, @age, @gender, @type );";
 
                     sqlConnection.Open();
 
@@ -35,7 +35,7 @@ namespace WieFit.Common.DAL
                             cmd.Parameters.AddWithValue("@name", user.Name);
                             cmd.Parameters.AddWithValue("@email", user.Email);
                             cmd.Parameters.AddWithValue("@password", password);
-                            cmd.Parameters.AddWithValue("@adress", user.Adress);
+                            cmd.Parameters.AddWithValue("@address", user.Address);
                             cmd.Parameters.AddWithValue("@phonenumber", user.PhoneNumber);
                             cmd.Parameters.AddWithValue("@age", user.Age);
                             cmd.Parameters.AddWithValue("@gender", user.Gender);
