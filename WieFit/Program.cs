@@ -12,15 +12,13 @@ namespace WieFit
 
         static void Main(string[] args)
         {
-            //while (LoggedInUser == null)
-            //{
-            //    Login();
-            //}
+            while (LoggedInUser == null)
+            {
+                Login();
+            }
 
-            //AddResult();
-            PlanActivity();
+            Menu();
         }
-
         static void CreateUser()
         {
             Console.Write("Enter your Username: ");
@@ -175,7 +173,7 @@ namespace WieFit
             {
                 loginManager = new LoginManager();
             }
-            bool loggedIn = false;
+            bool loggedIn = LoggedInUser != null;
 
             while (!loggedIn)
             {
@@ -282,7 +280,7 @@ namespace WieFit
         static void GetAllLocations()
         {
             Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
-            List<Location> locations = O.GetAllLocations();
+            List<Location>? locations = O.GetAllLocations();
             if (locations == null)
             {
                 Console.WriteLine("There are no Locations available.");
@@ -364,13 +362,13 @@ namespace WieFit
             Console.WriteLine("Coaches");
             if (O.GetAllCoaches() == null)
             {
-                Console.WriteLine("there are no coaches");
+                Console.WriteLine("There are no coaches");
             }
             else
             {
                 foreach (Coach c in O.GetAllCoaches())
                 {
-                    Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Adress}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender} ");
+                    Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Address}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender} ");
                 }
             }
         }
@@ -378,12 +376,80 @@ namespace WieFit
         {
             Console.Write("Enter coach username: ");
             string username = Console.ReadLine();
-            Coach c = Coach.GetCoach(username); 
+            Coach? c = Coach.GetCoach(username); 
             if (c == null) {
                 Console.WriteLine("coach is null");
             }
             else {
-                Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Adress}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender}");
+                Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Address}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender}");
+            }
+        }
+        static void Logout()
+        {
+            if (LoggedInUser == null)
+            {
+                Console.WriteLine("There is no logged in user..");
+                return;
+            }
+
+            LoggedInUser = null;
+            Console.WriteLine("You have been logged out.");
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+        }
+        static void Menu()
+        {
+            bool inMenu = true;
+            string menuHeader = @"
+                ====================================
+                 __          ___      ______ _ _   
+                 \ \        / (_)    |  ____(_) |  
+                  \ \  /\  / / _  ___| |__   _| |_ 
+                   \ \/  \/ / | |/ _ \  __| | | __|
+                    \  /\  /  | |  __/ |    | | |_ 
+                     \/  \/   |_|\___|_|    |_|\__|
+                ====================================";
+
+            Dictionary<int, KeyValuePair<string, Action>> menuItems = new()
+            {
+                [99] = new KeyValuePair<string, Action>("Logout", Logout),
+                [1] = new KeyValuePair<string, Action>("Get all locations", GetAllLocations),
+                [2] = new KeyValuePair<string, Action>("Add result", AddResult),
+            };
+
+            while (inMenu)
+            {
+                if (LoggedInUser == null)
+                {
+                    inMenu = false;
+                    break;
+                }
+
+                Console.Clear();
+                Console.WriteLine(menuHeader);
+
+                foreach (KeyValuePair<int, KeyValuePair<string, Action>> pair in menuItems)
+                {
+                    Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                }
+
+                int choice = -1;
+                Console.Write("Enter a menu item number: ");
+                while (!Int32.TryParse(Console.ReadLine(), out choice))
+                {
+                    Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                    Console.Write("Enter a menu item number: ");
+                }
+                
+                if (menuItems.TryGetValue(choice, out KeyValuePair<string, Action> action))
+                {
+                    action.Value();
+                } else
+                {
+                    Console.WriteLine("That option does not exist. Try again.");
+                    Console.Write("Press any key to continue...");
+                    Console.ReadKey();
+                }
             }
         }
     }
