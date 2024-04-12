@@ -41,7 +41,14 @@ namespace WieFit.Common.Users
         {
             return locationDAL.GetLocation(id);
         }
-
+        public List<Coach> GetAllCoaches()
+        {
+            return userDAL.GetAllCoach();
+        }
+        public Coach GetCoach(string username)
+        {
+            return userDAL.GetCoach(username);
+        }
 
     }
 }

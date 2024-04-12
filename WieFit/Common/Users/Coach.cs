@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WieFit.Common.DAL;
 
 namespace WieFit.Common.Users
 {
     internal class Coach : User
     {
+        private static readonly UserDAL userDAL = UserDAL.Instance;
         public Coach(string _username, string _name, string _email, string _adress, string _phoneNumber, int _age, char _gender) :
             base (_username, _name, _email, _adress, _phoneNumber, _age, _gender)
         {}
@@ -20,6 +22,11 @@ namespace WieFit.Common.Users
         public bool UpdateUser()
         {
             throw new NotImplementedException();
+        }
+
+        public static Coach? GetCoach(string username)
+        {
+            return userDAL.GetCoach(username);
         }
     }
 }

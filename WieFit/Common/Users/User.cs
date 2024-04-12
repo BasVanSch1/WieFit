@@ -19,6 +19,7 @@ namespace WieFit.Common.Users
         public string PhoneNumber {  get; private set; }
         public int Age { get; private set; }
         public char Gender { get; private set; }
+        public char Type { get; private set; }
 
         public User(string _username, string _name, string _email, string _adress, string _phoneNumber, int _age, char _gender)
         {
