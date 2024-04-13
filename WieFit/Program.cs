@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Azure.Core;
 using WieFit.Common;
 using WieFit.Common.Users;
@@ -12,13 +13,12 @@ namespace WieFit
 
         static void Main(string[] args)
         {
-            //while (LoggedInUser == null)
-            //{
-            //    Login();
-            //}
+            while (LoggedInUser == null)
+            {
+                Login();
+            }
 
-            //Menu();
-            GiveAdvise();
+            Menu();
 
         }
         static void CreateUser()
@@ -447,9 +447,38 @@ namespace WieFit
             Console.Write("Type your advise here: ");
             string Advice = Console.ReadLine();
 
-            if (coach.GiveAdvise(student,coach, Advice))
+            Advice advice = new Advice(Advice,coach, student);
+            if (coach.GiveAdvise(advice))
             {
                 Console.WriteLine("Succes!");
+            }
+        }
+        static void GetAdvice()
+        {
+            Student s = null;
+            Console.Write("Enter Username: ");
+            string username = Console.ReadLine();
+            s = Coach.GetStudent(username);
+            while (s == null)
+            {
+                Console.WriteLine("Please enter a correct username");
+                Console.Write("Enter Username: ");
+                username = Console.ReadLine();
+                s = Coach.GetStudent(username);
+            }
+            List<Advice> advices = null;
+            advices = s.GetAdvice(username);
+            if (advices == null)
+            {
+                Console.WriteLine("there are no advices");
+            }
+            else
+            {
+                Console.WriteLine("Advice: ");
+                foreach (Advice a in advices)
+                {
+                    Console.WriteLine($"Id: {a.Id}|Advice: {a.Description}| Coach: {a.coach.Name}");
+                }
             }
             
             

@@ -37,9 +37,9 @@ namespace WieFit.Common.Users
         {
             return userDAL.GetStudent(username);
         }
-        public bool GiveAdvise(Student student, Coach coach, string Advice)
+        public bool GiveAdvise(Advice advice)
         {
-            return userDAL.GiveAdvise(student, coach, Advice);
+            return userDAL.GiveAdvise(advice);
         }
     }
 }
