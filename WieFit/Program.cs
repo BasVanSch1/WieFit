@@ -18,6 +18,7 @@ namespace WieFit
             }
 
             Menu();
+
         }
         static void CreateUser()
         {
@@ -372,6 +373,23 @@ namespace WieFit
                 }
             }
         }
+        static void GetAllStudents()
+        {
+            Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
+            List<Student> students = O.GetAllStudents();
+            Console.WriteLine("Students: ");
+            if (students == null)
+            {
+                Console.WriteLine("there are no students");
+            }
+            else
+            {
+                foreach(Student s in students)
+                {
+                    Console.WriteLine($"username: {s.Username}| name: {s.Name}| email: {s.Email}| address: {s.Address}| phonenumber: {s.PhoneNumber}| age:{s.Age}| gender:{s.Gender} ");
+                }
+            }
+        }
         static void GetCoach()
         {
             Console.Write("Enter coach username: ");
@@ -384,6 +402,25 @@ namespace WieFit
                 Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Address}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender}");
             }
         }
+        static void GetStudent()
+        {
+            Console.Write("Enter student username: ");
+            string username = Console.ReadLine();
+            Student? s = Coach.GetStudent(username);
+            if (s == null)
+            {
+                Console.WriteLine("coach is null");
+            }
+            else
+            {
+                Console.WriteLine($"username: {s.Username}| name: {s.Name}| email: {s.Email}| address: {s.Address}| phonenumber: {s.PhoneNumber}| age:{s.Age}| gender:{s.Gender}");
+            }
+        }
+        static void GiveAdvise()
+        {
+
+        }
+
         static void Logout()
         {
             if (LoggedInUser == null)

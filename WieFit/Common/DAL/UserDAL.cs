@@ -227,6 +227,97 @@ namespace WieFit.Common.DAL
             }
             return coach;
         }
+        public List<Student>? GetAllStudents()
+        {
+            List<Student> students = new List<Student>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = @"SELECT username,name, email, address, phonenumber, age, gender FROM USERS WHERE type = 'S'";
+                    connection.Open();
+
+                    using(SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        using(SqlCommand command = new SqlCommand(query, connection, transaction))
+                        {
+                            using(SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+                                while (reader.Read())
+                                {
+                                    string _username = (string)reader["username"];
+                                    string _name = (string)reader["name"];
+                                    string _email = (string)reader["email"];
+                                    string _address = (string)reader["address"];
+                                    string _phonenumber = (string)reader["phonenumber"];
+                                    int _age = (int)reader["age"];
+                                    char _gender = reader["gender"].ToString().ToCharArray().First();
+
+                                    students.Add(new Student(_username, _name, _email, _address, _phonenumber, _age, _gender));
+                                }
+                            }
+                        }
+                    }
+                }
+            }catch (Exception ex)
+            {
+                throw ex;
+                return null;
+            }
+            return students;
+        }
+        public Student GetStudent(string username)
+        {
+            Student? student = null;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = @"SELECT username,name, email, address, phonenumber, age, gender FROM USERS WHERE type = 'S' AND username = @username; ";
+                    connection.Open();
+
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@username", username);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+
+                                if (reader.Read())
+                                {
+                                    string _username = (string)reader["username"];
+                                    string _name = (string)reader["name"];
+                                    string _email = (string)reader["email"];
+                                    string _address = (string)reader["address"];
+                                    string _phonenumber = (string)reader["phonenumber"];
+                                    int _age = (int)reader["age"];
+                                    char _gender = reader["gender"].ToString().ToCharArray().First();
+
+                                    student = new Student(_username, _name, _email, _address, _phonenumber, _age, _gender);
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            }
+                        }
+                        transaction.Commit();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                return null;
+            }
+            return student;
+        }
     }
 
     

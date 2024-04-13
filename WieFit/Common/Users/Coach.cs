@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using WieFit.Common.DAL;
@@ -27,6 +28,14 @@ namespace WieFit.Common.Users
         public static Coach? GetCoach(string username)
         {
             return userDAL.GetCoach(username);
+        }
+        public List<Student> GetAllStudents() 
+        {
+            return userDAL.GetAllStudents();
+        }
+        public static Student GetStudent(string username)
+        {
+            return userDAL.GetStudent(username);
         }
     }
 }
