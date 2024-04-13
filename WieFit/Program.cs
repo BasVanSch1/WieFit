@@ -12,12 +12,13 @@ namespace WieFit
 
         static void Main(string[] args)
         {
-            while (LoggedInUser == null)
-            {
-                Login();
-            }
+            //while (LoggedInUser == null)
+            //{
+            //    Login();
+            //}
 
-            Menu();
+            //Menu();
+            GiveAdvise();
 
         }
         static void CreateUser()
@@ -418,7 +419,40 @@ namespace WieFit
         }
         static void GiveAdvise()
         {
+            Student? student = null;
+            Coach? coach = null;
+            GetAllStudents();
+            Console.Write("Enter student username: ");
+            string Susername = Console.ReadLine();
+            student = Coach.GetStudent(Susername);
+            while (student == null)
+            {
+                Console.WriteLine("Please enter correct Username");
+                Console.Write("Enter student username: ");
+                Susername = Console.ReadLine();
+                student = Coach.GetStudent(Susername);
+            }
+            GetAllCoaches();
+            Console.Write("Enter Coach Username");
+            string Cusername = Console.ReadLine();
+            coach = Organizer.GetCoach(Cusername);
+            while( coach == null )
+            {
+                Console.WriteLine("Please enter correct Username");
+                Console.Write("Enter Coach Username");
+                Cusername = Console.ReadLine();
+                coach = Organizer.GetCoach(Cusername);
+            }
 
+            Console.Write("Type your advise here: ");
+            string Advice = Console.ReadLine();
+
+            if (coach.GiveAdvise(student,coach, Advice))
+            {
+                Console.WriteLine("Succes!");
+            }
+            
+            
         }
 
         static void Logout()

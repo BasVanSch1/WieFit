@@ -46,7 +46,7 @@ namespace WieFit.Common.Users
         {
             return userDAL.GetAllCoach();
         }
-        public Coach GetCoach(string username)
+        public static Coach GetCoach(string username)
         {
             return userDAL.GetCoach(username);
         }

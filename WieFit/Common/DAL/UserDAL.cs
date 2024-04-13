@@ -261,6 +261,7 @@ namespace WieFit.Common.DAL
                                 }
                             }
                         }
+                        transaction.Commit();
                     }
                 }
             }catch (Exception ex)
@@ -317,6 +318,35 @@ namespace WieFit.Common.DAL
                 return null;
             }
             return student;
+        }
+        public bool GiveAdvise(Student student, Coach coach, string Advice)
+        {
+            try 
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = @"INSERT INTO ADVICE(student, coach, advice) VALUES(@studentusername, @coachusername, @advice)";
+                    connection.Open();
+
+                    using(SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@studentusername", student.Username);
+                            command.Parameters.AddWithValue("@coachusername", coach.Username);
+                            command.Parameters.AddWithValue("@advice", Advice);
+
+                            command.ExecuteNonQuery();
+                        }
+                        transaction.Commit();
+                    }
+                }
+            }catch (Exception ex)
+            {
+                throw ex;
+                return false;
+            }
+            return true;
         }
     }
 
