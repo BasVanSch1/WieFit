@@ -388,12 +388,42 @@ namespace WieFit.Common.DAL
                     }
                 }
 
-            }catch (Exception ex)
+            } catch (Exception ex)
             {
                 throw ex;
                 return null;
             }
             return advices;
+        }
+        public bool CheckUsernameFree(string username)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string usernameStatement = @"SELECT COUNT(username) FROM USERS WHERE username = @username";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand cmd = new SqlCommand(usernameStatement, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@username", username);
+                            int count = (int) cmd.ExecuteScalar();
+
+                            if (count >= 1)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
