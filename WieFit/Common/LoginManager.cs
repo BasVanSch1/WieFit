@@ -37,5 +37,10 @@ namespace WieFit.Common
         }
 
         // GetUserType()
+
+        public bool CheckUsernameFree(string username)
+        {
+            return userDAL.CheckUsernameFree(username);
+        }
     }
 }

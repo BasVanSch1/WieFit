@@ -1,6 +1,9 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Azure;
 using Azure.Core;
+using Microsoft.Identity.Client;
 using WieFit.Common;
 using WieFit.Common.Users;
 
@@ -11,107 +14,21 @@ namespace WieFit
         static LoginManager? loginManager = null;
         static User? LoggedInUser = null;
 
+        static string menuHeader = 
+            @"
+            ==========================================
+                __          ___      ______   _   
+                \ \        / (_)    |  ____(_) |  
+                 \ \  /\  / / _  ___| |__   _| |_ 
+                  \ \/  \/ / | |/ _ \  __| | | __|
+                   \  /\  /  | |  __/ |    | | |_ 
+                    \/  \/   |_|\___|_|    |_|\__|
+            ==========================================";
+
         static void Main(string[] args)
         {
-            while (LoggedInUser == null)
-            {
-                Login();
-            }
-
             Menu();
 
-        }
-        static void CreateUser()
-        {
-            Console.Write("Enter your Username: ");
-            string username = Console.ReadLine();
-
-            Console.Write("Enter your Name: ");
-            string name = Console.ReadLine();
-
-            Console.Write("Enter your Email: ");
-            string email = Console.ReadLine();
-
-            Console.Write("Enter your Adress: ");
-            string adress = Console.ReadLine();
-
-            Console.Write("Enter your Phonenumber: ");
-            string phonenumber = Console.ReadLine();
-
-            Console.Write("Enter your Age: ");
-            int age;
-            while (!Int32.TryParse(Console.ReadLine(), out age))
-            {
-                Console.WriteLine("Only integers are allowed [00-99]. Please try again...");
-                Console.Write("Enter your Age: ");
-            }
-
-            Console.Write("Enter your Gender (M/F/O): ");
-            char gender = Console.ReadLine().ToCharArray().First();
-            while (char.ToUpper(gender) != 'F' && char.ToUpper(gender) != 'M' && char.ToUpper(gender) != 'O')
-            {
-                Console.WriteLine("Invalid input, enter either 'F', 'M' or 'O'.");
-                Console.Write("Enter your Gender (M/F/O): ");
-                gender = Console.ReadLine().ToCharArray().First();
-            }
-
-            Console.Write("Enter your AccountType (C = Coach, S = Student, O = Organizer): ");
-            char accounttype = Console.ReadLine().ToCharArray().First();
-            while (char.ToUpper(accounttype) != 'C' && char.ToUpper(accounttype) != 'S' & char.ToUpper(accounttype) != 'O')
-            {
-                Console.WriteLine("Invalid input, enter either 'C', 'S' or 'O'.");
-                Console.Write("Enter your AccountType (C = Coach, S = Student, O = Organizer): ");
-                accounttype = Console.ReadLine().ToCharArray().First();
-            }
-
-            Console.Write("Please enter a password for your account: ");
-            string password = Console.ReadLine();
-
-            switch (char.ToUpper(accounttype))
-            {
-                case 'C':
-                    {
-                        Coach user = new Coach(username, name, email, adress, phonenumber, age, gender);
-                        if (user.CreateUser(password))
-                        {
-                            Console.WriteLine("Success!");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Failed!");
-                        }
-                        break;
-                    }
-                case 'S':
-                    {
-                        Student user = new Student(username, name, email, adress, phonenumber, age, gender);
-                        if (user.CreateUser(password))
-                        {
-                            Console.WriteLine("Success!");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Failed!");
-                        }
-                        break;
-                    }
-                case 'O':
-                    {
-                        Organizer user = new Organizer(username, name, email, adress, phonenumber, age, gender);
-                        if (user.CreateUser(password))
-                        {
-                            Console.WriteLine("Success!");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Failed!");
-                        }
-                        break;
-                    }
-                default:
-                    Console.WriteLine("uh-oh, dit zou niet mogen gebeuren :P");
-                    break;
-            }
         }
 
         static void AddLocation() 
@@ -141,14 +58,12 @@ namespace WieFit
             }
             
         }
-
         static void DeleteLocation() 
         {
             Console.Write("What location would you like to delete?(Enter location id)");
             int locationid = Convert.ToInt32(Console.ReadLine());
             
         }
-
         static void CreateActivity()
         {
             Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
@@ -168,7 +83,6 @@ namespace WieFit
                 Console.Write("Failed");
             }
         }
-
         static void Login()
         {
             if (loginManager == null)
@@ -180,6 +94,7 @@ namespace WieFit
             while (!loggedIn)
             {
                 Console.Clear();
+                Console.WriteLine(menuHeader + "\n");
                 Console.Write("Please enter your username: ");
                 string? username = Console.ReadLine();
                 while (username == null || username.Length <= 0)
@@ -214,7 +129,6 @@ namespace WieFit
                 }
             }
         }
-
         static void GetAllActivities()
         {
             Organizer O = new Organizer("username", "name", "email", "adress", "telefoonnummer", 0, 'M');
@@ -225,7 +139,6 @@ namespace WieFit
                 Console.WriteLine($"Id: {a.Id} Name:{a.Name} Description: {a.Description} ");
             }
         }
-
         static void GetActivity()
         {
             Console.Write("Enter an activity id:");
@@ -238,7 +151,6 @@ namespace WieFit
             }
             Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
         }
-
         static void AddResult()
         {
             if (LoggedInUser == null)
@@ -278,7 +190,6 @@ namespace WieFit
                 Console.WriteLine("FAILED...");
             }
         }
-
         static void GetAllLocations()
         {
             Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
@@ -483,7 +394,6 @@ namespace WieFit
             
             
         }
-
         static void Logout()
         {
             if (LoggedInUser == null)
@@ -500,15 +410,12 @@ namespace WieFit
         static void Menu()
         {
             bool inMenu = true;
-            string menuHeader = @"
-                ====================================
-                 __          ___      ______ _ _   
-                 \ \        / (_)    |  ____(_) |  
-                  \ \  /\  / / _  ___| |__   _| |_ 
-                   \ \/  \/ / | |/ _ \  __| | | __|
-                    \  /\  /  | |  __/ |    | | |_ 
-                     \/  \/   |_|\___|_|    |_|\__|
-                ====================================";
+
+            Dictionary<int, KeyValuePair<string, Action>> loginMenu = new()
+            {
+                [1] = new KeyValuePair<string, Action>("Login", Login),
+                [2] = new KeyValuePair<string, Action>("Create account", CreateAccount)
+            };
 
             Dictionary<int, KeyValuePair<string, Action>> menuItems = new()
             {
@@ -517,14 +424,38 @@ namespace WieFit
                 [2] = new KeyValuePair<string, Action>("Add result", AddResult),
             };
 
-            while (inMenu)
+            while (LoggedInUser == null)
             {
-                if (LoggedInUser == null)
+                Console.Clear();
+                Console.WriteLine(menuHeader);
+
+                foreach (KeyValuePair<int, KeyValuePair<string, Action>> pair in loginMenu)
                 {
-                    inMenu = false;
-                    break;
+                    Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
                 }
 
+                int choice = -1;
+                Console.Write("Enter a menu item number: ");
+                while (!Int32.TryParse(Console.ReadLine(), out choice))
+                {
+                    Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                    Console.Write("Enter a menu item number: ");
+                }
+
+                if (loginMenu.TryGetValue(choice, out KeyValuePair<string, Action> action))
+                {
+                    action.Value();
+                }
+                else
+                {
+                    Console.WriteLine("That option does not exist. Try again.");
+                    Console.Write("Press any key to continue...");
+                    Console.ReadKey();
+                }
+            }
+
+            while (inMenu)
+            {
                 Console.Clear();
                 Console.WriteLine(menuHeader);
 
@@ -551,6 +482,178 @@ namespace WieFit
                     Console.ReadKey();
                 }
             }
+        }
+        static void CreateAccount()
+        {
+            if (LoggedInUser != null)
+            {
+                Console.WriteLine("Cannot create an account when you are already logged in.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            if (loginManager == null)
+            {
+                loginManager = new LoginManager();
+            }
+
+            Console.Write("Enter your username: ");
+            string? username = Console.ReadLine();
+
+            while (username == null || username.Length <= 0)
+            {
+                Console.WriteLine("Your username cannot be empty.");
+                Console.Write("Enter your username: ");
+                username = Console.ReadLine();
+            }
+
+            while (!loginManager.CheckUsernameFree(username))
+            {
+                Console.WriteLine("That username is already taken. Please choose another.");
+                Console.Write("Enter your username: ");
+                username = Console.ReadLine();
+            }
+
+            Console.Write("Enter your new password: ");
+            string? password = Console.ReadLine();
+
+            while (password == null || password.Length <= 0)
+            {
+                Console.WriteLine("Your password cannot be empty.");
+                Console.Write("Enter your new password: ");
+                password = Console.ReadLine();
+            }
+
+            Console.Write("Validate your password: ");
+            string? validatepassword = Console.ReadLine();
+
+            while (password != validatepassword)
+            {
+                Console.WriteLine("Passwords do not match! try again.");
+
+                Console.Write("Enter your new password: ");
+                password = Console.ReadLine();
+
+                Console.Write("Validate your password: ");
+                validatepassword = Console.ReadLine();
+            }
+
+            Console.Write("Enter your real name: ");
+            string? name = Console.ReadLine();
+
+            while (name == null || name.Length <= 0)
+            {
+                Console.WriteLine("Your name cannot be empty.");
+                Console.Write("Enter your real name: ");
+                name = Console.ReadLine();
+            }
+
+            Console.Write("Enter your email: ");
+            string? email = Console.ReadLine();
+
+            while (email == null || email.Length <= 0)
+            {
+                Console.WriteLine("Your email cannot be empty.");
+                Console.Write("Enter your email: ");
+                email = Console.ReadLine();
+            }
+
+            Console.Write("Enter your address: ");
+            string? address = Console.ReadLine();
+
+            while (address == null || address.Length <= 0)
+            {
+                Console.WriteLine("Your address cannot be empty.");
+                Console.Write("Enter your address: ");
+                address = Console.ReadLine();
+            }
+
+            Console.Write("Enter your phonenumber: ");
+            string? phonenumber = Console.ReadLine();
+
+            while (phonenumber == null || phonenumber.Length <= 0 || phonenumber.Any(x => char.IsLetter(x)))
+            {
+                Console.WriteLine("Invalid input. Try again.");
+                Console.Write("Enter your phonenumber: ");
+                phonenumber = Console.ReadLine();
+            }
+
+            Console.Write("Enter your Age: ");
+            int age;
+            while (!Int32.TryParse(Console.ReadLine(), out age))
+            {
+                Console.WriteLine("Only integers are allowed [00-99]. Please try again...");
+                Console.Write("Enter your Age: ");
+            }
+
+            Console.Write("Enter your Gender (M = Male, F = Female, O = Other): ");
+            char gender = Console.ReadLine().ToCharArray().First();
+            while (char.ToUpper(gender) != 'F' && char.ToUpper(gender) != 'M' && char.ToUpper(gender) != 'O')
+            {
+                Console.WriteLine("Invalid input, enter either 'F', 'M' or 'O'.");
+                Console.Write("Enter your Gender (M = Male, F = Female, O = Other): ");
+                gender = Console.ReadLine().ToCharArray().First();
+            }
+
+            Console.Write("Enter your AccountType (C = Coach, S = Student, O = Organizer): ");
+            char accounttype = Console.ReadLine().ToCharArray().First();
+            while (char.ToUpper(accounttype) != 'C' && char.ToUpper(accounttype) != 'S' & char.ToUpper(accounttype) != 'O')
+            {
+                Console.WriteLine("Invalid input, enter either 'C', 'S' or 'O'.");
+                Console.Write("Enter your AccountType (C = Coach, S = Student, O = Organizer): ");
+                accounttype = Console.ReadLine().ToCharArray().First();
+            }
+
+            switch (char.ToUpper(accounttype))
+            {
+                case 'C':
+                    {
+                        Coach user = new Coach(username, name, email, address, phonenumber, age, gender);
+                        if (user.CreateUser(password))
+                        {
+                            Console.WriteLine("Account created!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to create account!");
+                        }
+                        break;
+                    }
+                case 'S':
+                    {
+                        Student user = new Student(username, name, email, address, phonenumber, age, gender);
+                        if (user.CreateUser(password))
+                        {
+                            Console.WriteLine("Account created!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to create account!");
+                        }
+                        break;
+                    }
+                case 'O':
+                    {
+                        Organizer user = new Organizer(username, name, email, address, phonenumber, age, gender);
+                        if (user.CreateUser(password))
+                        {
+                            Console.WriteLine("Account created!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to create account!");
+                        }
+                        break;
+                    }
+                default:
+                    Console.WriteLine("uh-oh, dit zou niet mogen gebeuren :P");
+                    break;
+            }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+            return;
         }
     }
 }
