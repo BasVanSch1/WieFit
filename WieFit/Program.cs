@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Azure.Core;
 using WieFit.Common;
 using WieFit.Common.Users;
@@ -18,6 +19,7 @@ namespace WieFit
             }
 
             Menu();
+
         }
         static void CreateUser()
         {
@@ -372,6 +374,23 @@ namespace WieFit
                 }
             }
         }
+        static void GetAllStudents()
+        {
+            Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
+            List<Student> students = O.GetAllStudents();
+            Console.WriteLine("Students: ");
+            if (students == null)
+            {
+                Console.WriteLine("there are no students");
+            }
+            else
+            {
+                foreach(Student s in students)
+                {
+                    Console.WriteLine($"username: {s.Username}| name: {s.Name}| email: {s.Email}| address: {s.Address}| phonenumber: {s.PhoneNumber}| age:{s.Age}| gender:{s.Gender} ");
+                }
+            }
+        }
         static void GetCoach()
         {
             Console.Write("Enter coach username: ");
@@ -384,6 +403,87 @@ namespace WieFit
                 Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Address}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender}");
             }
         }
+        static void GetStudent()
+        {
+            Console.Write("Enter student username: ");
+            string username = Console.ReadLine();
+            Student? s = Coach.GetStudent(username);
+            if (s == null)
+            {
+                Console.WriteLine("coach is null");
+            }
+            else
+            {
+                Console.WriteLine($"username: {s.Username}| name: {s.Name}| email: {s.Email}| address: {s.Address}| phonenumber: {s.PhoneNumber}| age:{s.Age}| gender:{s.Gender}");
+            }
+        }
+        static void GiveAdvise()
+        {
+            Student? student = null;
+            Coach? coach = null;
+            GetAllStudents();
+            Console.Write("Enter student username: ");
+            string Susername = Console.ReadLine();
+            student = Coach.GetStudent(Susername);
+            while (student == null)
+            {
+                Console.WriteLine("Please enter correct Username");
+                Console.Write("Enter student username: ");
+                Susername = Console.ReadLine();
+                student = Coach.GetStudent(Susername);
+            }
+            GetAllCoaches();
+            Console.Write("Enter Coach Username");
+            string Cusername = Console.ReadLine();
+            coach = Organizer.GetCoach(Cusername);
+            while( coach == null )
+            {
+                Console.WriteLine("Please enter correct Username");
+                Console.Write("Enter Coach Username");
+                Cusername = Console.ReadLine();
+                coach = Organizer.GetCoach(Cusername);
+            }
+
+            Console.Write("Type your advise here: ");
+            string Advice = Console.ReadLine();
+
+            Advice advice = new Advice(Advice,coach, student);
+            if (coach.GiveAdvise(advice))
+            {
+                Console.WriteLine("Succes!");
+            }
+        }
+        static void GetAdvice()
+        {
+            Student s = null;
+            Console.Write("Enter Username: ");
+            string username = Console.ReadLine();
+            s = Coach.GetStudent(username);
+            while (s == null)
+            {
+                Console.WriteLine("Please enter a correct username");
+                Console.Write("Enter Username: ");
+                username = Console.ReadLine();
+                s = Coach.GetStudent(username);
+            }
+            List<Advice> advices = null;
+            advices = s.GetAdvice(username);
+            if (advices == null)
+            {
+                Console.WriteLine("there are no advices");
+            }
+            else
+            {
+                Console.WriteLine("Advice: ");
+                foreach (Advice a in advices)
+                {
+                    Console.WriteLine($"Id: {a.Id}|Advice: {a.Description}| Coach: {a.coach.Name}");
+                }
+            }
+            
+            
+        }
+
         static void Logout()
         {
             if (LoggedInUser == null)

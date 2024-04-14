@@ -21,5 +21,9 @@ namespace WieFit.Common.Users
         {
             throw new NotImplementedException();
         }
+        public List<Advice> GetAdvice(string username)
+        {
+            return userDAL.GetAdvice(username);
+        }
     }
 }

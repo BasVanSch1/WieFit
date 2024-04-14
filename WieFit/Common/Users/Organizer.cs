@@ -11,6 +11,7 @@ namespace WieFit.Common.Users
     internal class Organizer : User
     {
         private readonly ActivityDAL activityDAL = ActivityDAL.Instance;
+        private static readonly UserDAL userDAL = UserDAL.Instance;
         public Organizer(string _username, string _name, string _email, string _address, string _phoneNumber, int _age, char _gender) :
             base (_username, _name, _email, _address, _phoneNumber, _age, _gender)
         {}
@@ -45,9 +46,17 @@ namespace WieFit.Common.Users
         {
             return userDAL.GetAllCoach();
         }
-        public Coach GetCoach(string username)
+        public static Coach GetCoach(string username)
         {
             return userDAL.GetCoach(username);
+        }
+        public List<Student> GetAllStudents()
+        {
+            return userDAL.GetAllStudents();
+        }
+        public static Student GetStudent(string username)
+        {
+            return userDAL.GetStudent(username);
         }
 
     }
