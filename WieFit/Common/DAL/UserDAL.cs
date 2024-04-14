@@ -425,5 +425,47 @@ namespace WieFit.Common.DAL
 
             return true;
         }
+
+        public char? GetUserType(User user)
+        {
+            char? usertype = null;
+
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string usernameStatement = @"SELECT type FROM USERS WHERE username = @username";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand cmd = new SqlCommand(usernameStatement, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@username", user.Username);
+                            
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (reader.Read())
+                                {
+                                    usertype = (char)reader["type"];
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return usertype;
+        }
     }
 }

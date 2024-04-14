@@ -329,7 +329,7 @@ namespace WieFit
                 Console.WriteLine($"username: {s.Username}| name: {s.Name}| email: {s.Email}| address: {s.Address}| phonenumber: {s.PhoneNumber}| age:{s.Age}| gender:{s.Gender}");
             }
         }
-        static void GiveAdvise()
+        static void GiveAdvice()
         {
             Student? student = null;
             Coach? coach = null;
@@ -420,12 +420,22 @@ namespace WieFit
 
             Dictionary<int, KeyValuePair<string, Action>> menuItems = new()
             {
-                [99] = new KeyValuePair<string, Action>("Logout", Logout),
+                // Student
                 [1] = new KeyValuePair<string, Action>("Register for an activity", RegisterForActivity),
                 [2] = new KeyValuePair<string, Action>("Unregister for an activity", UnRegisterForActivity),
-                [3] = new KeyValuePair<string, Action>("Look at Advice from Coach", LookupAdvice)
-                [4] = new KeyValuePair<string, Action>("Add result (activity)", AddResult),
+                [3] = new KeyValuePair<string, Action>("Look at Advice from Coach", LookupAdvice),
+                [4] = new KeyValuePair<string, Action>("Lookup location information", LookupLocation),
+                [5] = new KeyValuePair<string, Action>("Add result (activity)", AddResult),
+                
+                // Coach
+                [10] = new KeyValuePair<string, Action>("Give advice to Student", GiveAdvice),
 
+                // Organisator
+                [15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
+                [16] = new KeyValuePair<string, Action>("Plan activity", PlanActivity),
+
+                // Everyone
+                [99] = new KeyValuePair<string, Action>("Logout", Logout),
             };
 
             while (LoggedInUser == null)
@@ -465,7 +475,24 @@ namespace WieFit
 
                 foreach (KeyValuePair<int, KeyValuePair<string, Action>> pair in menuItems)
                 {
-                    Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                    switch (LoggedInUser.Type)
+                    {
+                        case 'S' or 's': // show only student items
+                            if (pair.Key >= 1 && pair.Key <= 5 || pair.Key == 99)
+                            {
+                                Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                            }
+                            break;
+                        case 'C' or 'c': // show only student + coach items
+                            if (pair.Key >= 1 && pair.Key <= 10 || pair.Key == 99)
+                            {
+                                Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                            }
+                            break;
+                        case 'O' or 'o': // show everything
+                            Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                            break;
+                    }
                 }
 
                 int choice = -1;

@@ -19,7 +19,7 @@ namespace WieFit.Common.Users
         public string PhoneNumber {  get; private set; }
         public int Age { get; private set; }
         public char Gender { get; private set; }
-        public char Type { get; private set; }
+        public char? Type { get; private set; }
 
         public User(string _username, string _name, string _email, string _address, string _phoneNumber, int _age, char _gender)
         {
@@ -30,10 +30,15 @@ namespace WieFit.Common.Users
             PhoneNumber = _phoneNumber;
             Age = _age;
             Gender = _gender;
+            Type = GetUserType(this);
         }
         public List<Location>? GetAllLocations()
         {
             return locationDAL.GetAllLocations();
+        }
+        private char? GetUserType(User user)
+        {
+            return userDAL.GetUserType(user);
         }
     }
 }
