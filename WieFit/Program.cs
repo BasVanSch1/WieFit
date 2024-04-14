@@ -89,6 +89,7 @@ namespace WieFit
             {
                 loginManager = new LoginManager();
             }
+
             bool loggedIn = LoggedInUser != null;
 
             while (!loggedIn)
@@ -420,8 +421,11 @@ namespace WieFit
             Dictionary<int, KeyValuePair<string, Action>> menuItems = new()
             {
                 [99] = new KeyValuePair<string, Action>("Logout", Logout),
-                [1] = new KeyValuePair<string, Action>("Get all locations", GetAllLocations),
-                [2] = new KeyValuePair<string, Action>("Add result", AddResult),
+                [1] = new KeyValuePair<string, Action>("Register for an activity", RegisterForActivity),
+                [2] = new KeyValuePair<string, Action>("Unregister for an activity", UnRegisterForActivity),
+                [3] = new KeyValuePair<string, Action>("Look at Advice from Coach", LookupAdvice)
+                [4] = new KeyValuePair<string, Action>("Add result (activity)", AddResult),
+
             };
 
             while (LoggedInUser == null)
