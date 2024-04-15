@@ -83,6 +83,22 @@ namespace WieFit
                 Console.Write("Failed");
             }
         }
+
+        static void GetPlannedActivitiesFromLocation()
+        {
+            Console.WriteLine("Please enter location id");
+            int locationId = Convert.ToInt32(Console.ReadLine());
+            List<PlannedActivity> plannedActivities = LoggedInUser.GetPlannedActivitiesFromLocationId(locationId);
+            foreach (PlannedActivity plannedActivity in plannedActivities)
+            {
+                Console.WriteLine($"Activity name = {plannedActivity.Name}");
+                Console.WriteLine($"Activity description = {plannedActivity.Description}");
+                Console.WriteLine($"Coach name = {plannedActivity.Coach.Name}");
+                Console.WriteLine($"Start datatime = {plannedActivity.StartTime}");
+                Console.WriteLine($"End datetime = {plannedActivity.EndTime}");
+            }
+        }
+        
         static void Login()
         {
             if (loginManager == null)
