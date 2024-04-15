@@ -97,6 +97,7 @@ namespace WieFit
                 Console.WriteLine($"Start datatime = {plannedActivity.StartTime}");
                 Console.WriteLine($"End datetime = {plannedActivity.EndTime}");
             }
+            Console.ReadLine();
         }
         
         static void Login()
