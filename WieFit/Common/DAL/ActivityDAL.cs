@@ -152,7 +152,7 @@ namespace WieFit.Common.DAL
             return activities;
         }
 
-        public List<PlannedActivity> GetPlannedActivitiesFromLocation(Location location)
+        public List<PlannedActivity> GetPlannedActivitiesFromLocationId(int locationId)
         {
             List<PlannedActivity> plannedActivities = new();
             try
@@ -166,7 +166,7 @@ namespace WieFit.Common.DAL
                     {
                         using (SqlCommand command = new SqlCommand(query, connection, transaction))
                         {
-                            command.Parameters.AddWithValue("@locationid", location.Id);
+                            command.Parameters.AddWithValue("@locationid", locationId);
 
                             using (SqlDataReader reader = command.ExecuteReader())
                             {

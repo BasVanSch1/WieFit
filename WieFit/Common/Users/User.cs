@@ -11,6 +11,7 @@ namespace WieFit.Common.Users
     {
         protected readonly UserDAL userDAL = UserDAL.Instance;
         protected readonly LocationDAL locationDAL = LocationDAL.Instance;
+        protected readonly ActivityDAL activityDAL = ActivityDAL.Instance;
 
         public string Username { get; private set; }
         public string Name { get; private set; }
@@ -34,6 +35,11 @@ namespace WieFit.Common.Users
         public List<Location>? GetAllLocations()
         {
             return locationDAL.GetAllLocations();
+        }
+
+        public List<PlannedActivity>? GetPlannedActivitiesFromLocationId(int locationId)
+        {
+            return activityDAL.GetPlannedActivitiesFromLocationId(locationId);
         }
     }
 }
