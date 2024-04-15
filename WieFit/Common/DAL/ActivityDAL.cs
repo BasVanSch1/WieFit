@@ -172,7 +172,7 @@ namespace WieFit.Common.DAL
                             {
                                 if (!reader.HasRows)
                                 {
-                                    return null;
+                                    return plannedActivities;
                                 }
 
                                 while (reader.Read())
