@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WieFit.Common.Users;
 
 namespace WieFit.Common.DAL
 {
@@ -150,6 +151,47 @@ namespace WieFit.Common.DAL
             }
             return activities;
         }
+
+        public List<PlannedActivity> GetPlannedActivitiesFromLocation(Location location)
+        {
+            List<PlannedActivity> plannedActivities = new();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT * FROM PLANNEDACTIVITY P JOIN dbo.ACTIVITY A on P.activityid = A.activityid WHERE locationid = @locationid";
+                    connection.Open();
+
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@locationid", location.Id);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (reader.Read())
+                                {
+                                    plannedActivities.Add(MapPlannedActivity(reader));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            
+            return plannedActivities;
+        }
+        
         private Activity MapActivity(SqlDataReader reader)
         {
             try
