@@ -166,5 +166,18 @@ namespace WieFit.Common.DAL
                 return null;
             }
         }
+
+        private PlannedActivity MapPlannedActivity(SqlDataReader reader)
+        {
+            PlannedActivity plannedActivity = new PlannedActivity(
+                Convert.ToInt32(reader["activityid"]),
+                reader["name"].ToString(),
+                reader["description"].ToString(),
+                Convert.ToDateTime(reader["startdatetime"]),
+                Convert.ToDateTime(reader["enddatetime"]),
+                Coach.GetCoach(reader["coachusername"].ToString())
+            );
+            return plannedActivity;
+        }
     }
 }
