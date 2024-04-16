@@ -65,25 +65,6 @@ namespace WieFit
             int locationid = Convert.ToInt32(Console.ReadLine());
             
         }
-        static void CreateActivity()
-        {
-            Organizer O = new Organizer("username", "name", "mail", "adress", "telefoonnummer", 0, 'M');
-            Console.Write("Enter Activity name...");
-            string Name = Console.ReadLine();
-
-            Console.Write("Enter Activity Description");
-            string Description = Console.ReadLine();
-
-            Common.Activity activity = new Common.Activity(Name, Description);
-            if (O.CreateActivity(activity))
-            {
-                Console.Write("Succes");
-            }
-            else
-            {
-                Console.Write("Failed");
-            }
-        }
         static void Login()
         {
             if (loginManager == null)
@@ -452,7 +433,7 @@ namespace WieFit
                 [10] = new KeyValuePair<string, Action>("Give advice to Student", GiveAdvice),
 
                 // Organisator
-                //[15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
+                [15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
                 // [16] = new KeyValuePair<string, Action>("Plan activity", PlanActivity),
 
                 // Everyone
@@ -499,18 +480,18 @@ namespace WieFit
                     switch (LoggedInUser.Type)
                     {
                         case 'S' or 's': // show only student items
-                            if (pair.Key >= 1 && pair.Key <= 5 || pair.Key == 99)
+                            if (pair.Key >= 1 && pair.Key < 10 || pair.Key == 99)
                             {
                                 Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
                             }
                             break;
                         case 'C' or 'c': // show only student + coach items
-                            if (pair.Key >= 1 && pair.Key <= 10 || pair.Key == 99)
+                            if (pair.Key >= 1 && pair.Key < 15 || pair.Key == 99)
                             {
                                 Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
                             }
                             break;
-                        case 'O' or 'o': // show everything
+                        case 'O' or 'o': // show everything for organizers
                             Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
                             break;
                     }
@@ -755,6 +736,8 @@ namespace WieFit
                 return;
             }
 
+            Console.WriteLine("======");
+
             foreach (Result result in resultList)
             {
                 Console.WriteLine(
@@ -862,6 +845,65 @@ namespace WieFit
                         ======
                         """);
                 }
+            }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+        }
+        static void CreateActivity()
+        {
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            if (LoggedInUser == null)
+            {
+                return;
+            }
+
+            if (!(LoggedInUser.Type == 'O' || LoggedInUser.Type == 'o'))
+            {
+                Console.WriteLine("You do not have permission to use this function.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.Write("Enter the name of the Activity: ");
+            string? activityName = Console.ReadLine();
+            while (activityName == null || activityName.Length <= 0)
+            {
+                Console.WriteLine("The activity name cannot be empty. Please try again.");
+                Console.Write("Enter the name of the Activity: ");
+                activityName = Console.ReadLine();
+            }
+
+            Console.Write("Enter the description of the Activity: ");
+            string? activityDescription = Console.ReadLine();
+            while (activityDescription == null || activityDescription.Length <= 0)
+            {
+                Console.WriteLine("The activity description cannot be empty. Please try again.");
+                Console.Write("Enter the name of the Activity: ");
+                activityDescription = Console.ReadLine();
+            }
+
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            Activity? activity = Activity.CreateActivity(activityName, activityDescription);
+            if (activity == null)
+            {
+                Console.WriteLine("Something went wrong when uploading the activity. try again later.");
+            } else
+            {
+                Console.WriteLine("Activity created!");
+                Console.WriteLine(
+                    $"""
+                    ======
+                    Activity ID:            {activity.Id}
+                    Activity Name:          {activity.Name}
+                    Activity Description:   {activity.Description}
+                    ======
+                    """);
             }
 
             Console.WriteLine("Press any key to continue...");

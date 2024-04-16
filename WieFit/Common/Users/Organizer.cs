@@ -25,11 +25,6 @@ namespace WieFit.Common.Users
         {
             throw new NotImplementedException();
         }
-
-        public bool CreateActivity(Activity activity)
-        {
-            return activityDAL.CreateActivity(activity);
-        }
         public bool PlanActivity(PlannedActivity plannedactivity, Location location)
         {
             return activityDAL.PlanActivity(plannedactivity, location);

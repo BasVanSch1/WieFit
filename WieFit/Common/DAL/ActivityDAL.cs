@@ -17,33 +17,59 @@ namespace WieFit.Common.DAL
         static ActivityDAL() { }
         private ActivityDAL() { }
 
-        public bool CreateActivity(Activity activity)
+        public Activity? CreateActivity(string name, string description)
         {
+            Activity? activity = null;
             try
             {
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
                     sqlConnection.Open();
-                    string query = @"INSERT INTO ACTIVITY(name, description) VALUES(@name, @description);";
+                    string insertActivity = @"INSERT INTO ACTIVITY(name, description) VALUES(@name, @description); SELECT CAST(@@IDENTITY AS INT);";
+                    string getActivity = @"SELECT name, description FROM ACTIVITY WHERE activityid = @activityid";
+
                     using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
                     {
-                        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
-                        {
-                            sqlCommand.Parameters.AddWithValue("@name", activity.Name);
-                            sqlCommand.Parameters.AddWithValue("@description", activity.Description);
-                            sqlCommand.ExecuteNonQuery();
+                        int activityid;
 
-                            sqlTransaction.Commit();
+                        using (SqlCommand cmd = new SqlCommand(insertActivity, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@name", name);
+                            cmd.Parameters.AddWithValue("@description", description);
+                            activityid = (int)cmd.ExecuteScalar();
                         }
+
+                        using (SqlCommand cmd = new SqlCommand(getActivity, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@activityid", activityid);
+                            
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (reader.Read())
+                                {
+                                    string _name = (string)reader["name"];
+                                    string _description = (string)reader["description"];
+
+                                    activity = new Activity(activityid, _name, _description);
+                                }
+                            }
+                        }
+
+                        sqlTransaction.Commit();
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return false;
+                return null;
             }
 
-            return true;
+            return activity;
         }
         public bool PlanActivity(PlannedActivity plannedactivity, Location location)
         {

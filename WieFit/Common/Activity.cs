@@ -36,6 +36,11 @@ namespace WieFit.Common
         {
             return activityDAL.GetAllActivities();
         }
+
+        public static Activity? CreateActivity(string _name, string _description)
+        {
+            return activityDAL.CreateActivity(_name, _description);
+        }
     }
     
 }
