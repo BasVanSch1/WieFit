@@ -33,21 +33,12 @@ namespace WieFit.Common.Users
             Gender = _gender;
             Type = GetUserType(this);
         }
-        public List<Location>? GetAllLocations()
-        {
-            return locationDAL.GetAllLocations();
-        }
-
-        public List<PlannedActivity>? GetPlannedActivities()
-        {
-            return activityDAL.GetPlannedActivities();
-        }
 
         private char? GetUserType(User user)
         {
             return userDAL.GetUserType(user);
         }
-        public List<Advice> GetAdvice()
+        public List<Advice>? GetAdvice()
         {
             return userDAL.GetAdvice(this);
         }

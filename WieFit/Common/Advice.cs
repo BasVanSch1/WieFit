@@ -33,11 +33,5 @@ namespace WieFit.Common
             Description = _Description;
             coach = _coach;
         }
-
-        public override string ToString()
-        {
-            return $"Coach: {coach.Name} | Advice: {Description}";
-        }
-
     }
 }

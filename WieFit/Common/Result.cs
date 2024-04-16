@@ -14,10 +14,10 @@ namespace WieFit.Common
 
         public DateTime Date { get; private set; }
         public string Description { get; private set; }
-        public float Value { get; private set; }
+        public decimal Value { get; private set; }
         public Activity Activity { get; private set; }
 
-        public Result(DateTime _date, string _description, float _value, Activity activity)
+        public Result(DateTime _date, string _description, decimal _value, Activity activity)
         {
 
             Date = _date;

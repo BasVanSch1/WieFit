@@ -25,31 +25,6 @@ namespace WieFit.Common.Users
         {
             throw new NotImplementedException();
         }
-
-        public bool CreateActivity(Activity activity)
-        {
-            return activityDAL.CreateActivity(activity);
-        }
-        public bool PlanActivity(PlannedActivity plannedactivity, Location location)
-        {
-            return activityDAL.PlanActivity(plannedactivity, location);
-        }
-        public List<Activity>? GetAllActivities()
-        {
-            return activityDAL.GetAllActivities();
-        }
-        public Location GetLocation(int id)
-        {
-            return locationDAL.GetLocation(id);
-        }
-        public List<Coach> GetAllCoaches()
-        {
-            return userDAL.GetAllCoach();
-        }
-        public static Coach GetCoach(string username)
-        {
-            return userDAL.GetCoach(username);
-        }
         public static Organizer ConverToOrganizer(User user)
         {
             return new Organizer(user.Username, user.Name, user.Email, user.Address, user.PhoneNumber, user.Age, user.Gender);

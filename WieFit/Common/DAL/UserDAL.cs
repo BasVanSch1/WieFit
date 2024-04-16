@@ -136,7 +136,7 @@ namespace WieFit.Common.DAL
 
             return user;
         }
-        public List<Coach>? GetAllCoach()
+        public List<Coach>? GetAllCoaches()
         {
             List<Coach>? coaches = new List<Coach>();
             try
@@ -173,11 +173,11 @@ namespace WieFit.Common.DAL
                         sqlTransaction.Commit();
                     }
                 }
-            }catch (Exception ex)
+            } catch (Exception)
             {
-                throw ex;
                 return null;
             }
+
             return coaches;
         }
         public Coach? GetCoach(string username)
@@ -220,9 +220,8 @@ namespace WieFit.Common.DAL
                         transaction.Commit();
                     }
                 }
-            }catch (Exception ex)
+            }catch (Exception)
             {
-                throw ex;
                 return null;
             }
             return coach;
@@ -266,7 +265,7 @@ namespace WieFit.Common.DAL
                         transaction.Commit();
                     }
                 }
-            } catch (Exception ex)
+            } catch (Exception)
             {
                 return null;
             }
@@ -294,9 +293,8 @@ namespace WieFit.Common.DAL
                         transaction.Commit();
                     }
                 }
-            }catch (Exception ex)
+            }catch (Exception)
             {
-                throw ex;
                 return false;
             }
             return true;
@@ -341,9 +339,8 @@ namespace WieFit.Common.DAL
                     }
                 }
 
-            } catch (Exception ex)
+            } catch (Exception)
             {
-                throw ex;
                 return null;
             }
             return advices;
@@ -412,9 +409,8 @@ namespace WieFit.Common.DAL
                     }
                 }
             }
-            catch (Exception ex )
+            catch (Exception)
             {
-                throw ex;
                 return null;
             }
 
