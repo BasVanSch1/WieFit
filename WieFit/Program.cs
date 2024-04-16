@@ -187,7 +187,7 @@ namespace WieFit
             while (!Int32.TryParse(Console.ReadLine(), out activityid))
             {
                 Console.WriteLine("Invalid input. Please enter an integer [0-99]");
-                Console.WriteLine("Enter the activity ID you which to add a result for:");
+                Console.Write("Enter the activity ID you which to add a result for:");
             }
 
             Activity? activity = Activity.GetActivity(activityid);
@@ -199,25 +199,25 @@ namespace WieFit
                 while (!Int32.TryParse(Console.ReadLine(), out activityid))
                 {
                     Console.WriteLine("Invalid input. Please enter an integer [0-99]");
-                    Console.WriteLine("Enter the activity ID you which to add a result for:");
+                    Console.Write("Enter the activity ID you which to add a result for:");
                 }
 
-                activity = Activity.GetActivity(activityid); // HEEL slecht, telkens naar de database vragen voor de activity. 
+                activity = Activity.GetActivity(activityid); // HEEL slecht, telkens naar de database vragen voor de activity. maarja, wat is een 'beetje' technical debt nou?
             }
 
-            Console.Write("When is this result made? enter(YYYY/MM/DD HH:MM:SS): ");
+            Console.Write("When is this result made? (YYYY/MM/DD HH:MM:SS): ");
             DateTime date;
             while (!DateTime.TryParse(Console.ReadLine(), out date))
             {
                 Console.WriteLine("Invalid Date...");
-                Console.Write("When is this result made? enter(YYYY/MM/DD HH:MM:SS): ");
+                Console.Write("When is this result made? (YYYY/MM/DD HH:MM:SS): ");
             }
 
             Console.Write("Add result description: ");
             string? description = Console.ReadLine();
             while (description == null || description.Length <= 0)
             {
-                Console.Write("Description cannot be empty. Try again.");
+                Console.WriteLine("Description cannot be empty. Try again.");
                 Console.Write("Add result description: ");
                 description = Console.ReadLine();
             }
@@ -227,7 +227,7 @@ namespace WieFit
             while (!float.TryParse(Console.ReadLine(), out result))
             {
                 Console.WriteLine("Invalid value...");
-                Console.WriteLine("Result value (only integers) : ");
+                Console.Write("Result value (only integers) : ");
             }
 
             Result newresult = new Result(date, description, result, activity);
@@ -241,28 +241,11 @@ namespace WieFit
                 Console.WriteLine("FAILED...");
             }
         }
-        static void GetAllLocations()
-        {
-            Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
-            List<Location>? locations = O.GetAllLocations();
-            if (locations == null)
-            {
-                Console.WriteLine("There are no Locations available.");
-                return;
-            }
-            else
-            {
-                foreach (Location l in locations)
-                {
-                    Console.WriteLine($"Locationid: {l.Id}| name: {l.Name} | address: {l.Address} | postalcode: {l.Postalcode} | city: {l.City} | country: {l.Country}");
-                }
-            }
-        }
         static void PlanActivity()
         {
             Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
 
-            GetAllLocations();
+            //GetAllLocations();
 
             int lId;
 
@@ -336,22 +319,15 @@ namespace WieFit
                 }
             }
         }
-        static void GetCoach()
-        {
-            Console.Write("Enter coach username: ");
-            string username = Console.ReadLine();
-            Coach? c = Coach.GetCoach(username); 
-            if (c == null) {
-                Console.WriteLine("coach is null");
-            }
-            else {
-                Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Address}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender}");
-            }
-        }
         static void GiveAdvice()
         {
             Console.Clear();
             Console.WriteLine(menuHeader);
+
+            if (LoggedInUser == null)
+            {
+                return;
+            }
 
             if (!(LoggedInUser.Type == 'C' || LoggedInUser.Type == 'c' || LoggedInUser.Type == 'O' || LoggedInUser.Type == 'o'))
             {
@@ -468,7 +444,7 @@ namespace WieFit
                 // [1] = new KeyValuePair<string, Action>("Register for an activity", RegisterForActivity),
                 // [2] = new KeyValuePair<string, Action>("Unregister for an activity", UnregisterForActivity),
                 [3] = new KeyValuePair<string, Action>("Look at Advice from Coach", LookupAdvice),
-                // [4] = new KeyValuePair<string, Action>("Lookup location information", LookupLocation),
+                [4] = new KeyValuePair<string, Action>("Lookup location information", LookupLocation),
                 [5] = new KeyValuePair<string, Action>("Add result (activity)", AddResult),
                 [6] = new KeyValuePair<string, Action>("Lookup results", LookupResult),
                 
@@ -476,8 +452,8 @@ namespace WieFit
                 [10] = new KeyValuePair<string, Action>("Give advice to Student", GiveAdvice),
 
                 // Organisator
-                [15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
-                [16] = new KeyValuePair<string, Action>("Plan activity", PlanActivity),
+                // [15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
+                // [16] = new KeyValuePair<string, Action>("Plan activity", PlanActivity),
 
                 // Everyone
                 [99] = new KeyValuePair<string, Action>("Logout", Logout),
@@ -731,7 +707,6 @@ namespace WieFit
             Console.ReadKey();
             return;
         }
-
         static void LookupAdvice()
         {
             if (LoggedInUser == null)
@@ -743,17 +718,17 @@ namespace WieFit
             Console.WriteLine(menuHeader);
 
             Student student = Student.ConverToStudent(LoggedInUser);
-            List<Advice> adviceList = student.GetAdvice();
+            List<Advice>? adviceList = student.GetAdvice();
 
-            if (adviceList.Count > 0)
+            if (adviceList == null || adviceList.Count == 0)
+            {
+                Console.WriteLine("You have no advice yet. Ask your coach!");
+            } else
             {
                 foreach (Advice advice in adviceList)
                 {
                     Console.WriteLine(advice);
                 }
-            } else
-            {
-                Console.WriteLine("You have no advice yet. Ask your coach!");
             }
 
             Console.Write("Press any key to continue...");
@@ -761,11 +736,6 @@ namespace WieFit
         }
         static void LookupResult()
         {
-
-            // convert loggedinuser to student
-            // put all results from student in a list
-            // print results to screen
-
             Console.Clear();
             Console.WriteLine(menuHeader);
 
@@ -790,6 +760,106 @@ namespace WieFit
                 Console.WriteLine(result);
             }
 
+        }
+        static void LookupLocation()
+        {
+            // Get all locations
+            // Ask for locationid
+            // Get location from database
+            // print location information (including activities)
+
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            if (LoggedInUser == null)
+            {
+                return;
+            }
+
+            List<Location>? locationList = Location.GetAllLocations();
+
+            if (locationList == null || locationList.Count == 0)
+            {
+                Console.WriteLine("There are no locations registered in the system. Ask an organizer to add some.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            foreach (Location loc in locationList)
+            {
+                Console.WriteLine($"ID: {loc.Id} | Name: {loc.Name} | Address: {loc.Address} | Postalcode: {loc.Postalcode} | City: {loc.City} | Country: {loc.Country}");
+            }
+
+            Console.Write("Enter a location ID to lookup more information (enter -1 to cancel):  ");
+            int locationid = -1;
+            while (!Int32.TryParse(Console.ReadLine(), out locationid))
+            {
+                Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                Console.Write("Enter a location ID to lookup more information (enter -1 to cancel):  ");
+            }
+
+            if (locationid == -1)
+            {
+                return;
+            }
+
+            Location? location = Location.GetLocation(locationid);
+            while (location == null)
+            {
+                Console.WriteLine("That location does not exist. Try again.");
+                Console.Write("Enter a location ID to lookup more information (enter -1 to cancel):  ");
+
+                while (!Int32.TryParse(Console.ReadLine(), out locationid))
+                {
+                    Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                    Console.Write("Enter a location ID to lookup more information (enter -1 to cancel):  ");
+                }
+
+                if (locationid == -1) // misschien een method van maken? is copy-paste van hierboven.
+                {
+                    return;
+                }
+
+                location = Location.GetLocation(locationid); // HEEL slecht, telkens naar de database vragen voor de locatie. maarja, wat is een 'beetje' technical debt nou?
+            }
+
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+            Console.WriteLine(
+                $"""
+                ID:         {location.Id}
+                Name:       {location.Name}
+                Address:    {location.Address}
+                Postalcode: {location.Postalcode}
+                City:       {location.City}
+                Country:    {location.Country}
+
+                Planned activities:
+                ======
+                """);
+
+            if (location.PlannedActivities == null || location.PlannedActivities.Count == 0)
+            {
+                Console.WriteLine("There are no activities planned for this location.");
+                Console.WriteLine("======");
+            } else
+            {
+                foreach (PlannedActivity activity in location.PlannedActivities)
+                {
+                    Console.WriteLine($"""
+                        Name:           {activity.Name}
+                        Description:    {activity.Description}
+                        Start time:     {activity.StartTime}
+                        End time:       {activity.EndTime}
+                        Coach:          {activity.Coach.Name}
+                        ======
+                        """);
+                }
+            }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
     }
 }

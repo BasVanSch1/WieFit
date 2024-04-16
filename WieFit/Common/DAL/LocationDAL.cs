@@ -82,8 +82,7 @@ namespace WieFit.Common.DAL
                 return false;
             }
         }
-
-        public List<Location> GetAllLocations()
+        public List<Location>? GetAllLocations()
         {
             List<Location> locations = new List<Location>();
 
@@ -94,7 +93,7 @@ namespace WieFit.Common.DAL
                     string query = "SELECT locationid, name, address, postalcode, city, country  FROM LOCATION";
                     sqlConnection.Open();
 
-                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction()) // wss niet eens nodig maarja..
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
                     {
                         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
                         {
@@ -118,20 +117,22 @@ namespace WieFit.Common.DAL
                                 }
                             }
                         }
+
                         sqlTransaction.Commit();
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
                 return null;
             }
+
             return locations;
         }
-        public Location GetLocation(int id)
+        public Location? GetLocation(int id)
         {
-            Location location = null;
+            Location? location = null;
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -168,11 +169,11 @@ namespace WieFit.Common.DAL
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
                 return null;
             }
+
             return location;
         }
 
