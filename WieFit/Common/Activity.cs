@@ -10,7 +10,7 @@ namespace WieFit.Common
 {
     internal class Activity
     {
-        private static readonly ActivityDAL activityDAL = ActivityDAL.Instance;
+        protected static readonly ActivityDAL activityDAL = ActivityDAL.Instance;
         
         public int Id { get; set; }
         public string Name { get; set; }

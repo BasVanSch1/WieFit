@@ -46,7 +46,7 @@ namespace WieFit.Common.DAL
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -77,7 +77,7 @@ namespace WieFit.Common.DAL
                 return true;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -176,7 +176,5 @@ namespace WieFit.Common.DAL
 
             return location;
         }
-
-
     }
 }
