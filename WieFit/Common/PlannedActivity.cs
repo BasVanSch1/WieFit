@@ -21,10 +21,5 @@ namespace WieFit.Common
             EndTime= _EndTime;
             Coach = _Coach;
         }
-
-        public override string ToString()
-        {
-            return $"Id: {Id} | Name: {Name} | Description {Description} | StartTime: {StartTime} | Endtime: {EndTime} | CoachName: {Coach.Name}";
-        }
     }
 }

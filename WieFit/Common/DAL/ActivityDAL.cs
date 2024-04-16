@@ -151,7 +151,7 @@ namespace WieFit.Common.DAL
         }
         public List<PlannedActivity>? GetPlannedActivities()
         {
-            List<PlannedActivity> plannedActivity = null;
+            List<PlannedActivity> plannedActivity = new List<PlannedActivity>();
 
             try
             {
@@ -179,9 +179,9 @@ namespace WieFit.Common.DAL
                                     DateTime _startdatetime = (DateTime)sqlReader["startdatetime"];
                                     DateTime _enddatetime = (DateTime)sqlReader["enddatetime"];
                                     string _locationName = (string)sqlReader["LocationName"];
-                                    string _coachName = (string)sqlReader["CoachName"];
+                                    string _coachUsername = (string)sqlReader["CoachUsername"];
 
-                                    plannedActivity.Add(new PlannedActivity(_activityId, _activityName, _activityDescription, _startdatetime, _enddatetime, Coach.GetCoach(_coachName)));
+                                    plannedActivity.Add(new PlannedActivity(_activityId, _activityName, _activityDescription, _startdatetime, _enddatetime, Coach.GetCoach(_coachUsername)));
                                 }
                             }
                         }
@@ -196,6 +196,57 @@ namespace WieFit.Common.DAL
 
             return plannedActivity;
         }
+
+        public List<PlannedActivity>? GetPlannedActivities(Location location)
+        {
+            List<PlannedActivity> plannedActivity = new List<PlannedActivity>();
+
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string plannedActivityStatement = "select PA.activityid, A.name AS ActivityName, A.description, PA.startdatetime, PA.enddatetime, L.name AS LocationName, U.username As CoachUsername FROM PLANNEDACTIVITY PA INNER JOIN ACTIVITY A ON PA.activityid = A.activityid INNER JOIN LOCATION L ON PA.locationid = L.locationid INNER JOIN USERS U ON PA.coachusername = U.username WHERE PA.locationid = @locationid ORDER BY PA.startdatetime;";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand cmd = new SqlCommand(plannedActivityStatement, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@locationid", location.Id);
+
+                            using (SqlDataReader sqlReader = cmd.ExecuteReader())
+                            {
+                                if (!sqlReader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (sqlReader.Read())
+                                {
+                                    int _activityId = (int)sqlReader["activityid"];
+                                    string _activityName = (string)sqlReader["ActivityName"];
+                                    string _activityDescription = (string)sqlReader["description"];
+                                    DateTime _startdatetime = (DateTime)sqlReader["startdatetime"];
+                                    DateTime _enddatetime = (DateTime)sqlReader["enddatetime"];
+                                    string _locationName = (string)sqlReader["LocationName"];
+                                    string _coachUsername = (string)sqlReader["CoachUsername"];
+
+                                    plannedActivity.Add(new PlannedActivity(_activityId, _activityName, _activityDescription, _startdatetime, _enddatetime, Coach.GetCoach(_coachUsername)));
+                                }
+                            }
+                        }
+                        sqlTransaction.Commit();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return plannedActivity;
+        }
+
         private Activity? MapActivity(SqlDataReader reader)
         {
             try
