@@ -17,40 +17,65 @@ namespace WieFit.Common.DAL
         static LocationDAL() { }
         private LocationDAL() { }
 
-        public bool Addlocation(Location location)
+        public Location? CreateLocation(string name, string address, string postalcode, string city, string country)
         {
+            Location? location = null;
             try
             {
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string query = "INSERT INTO LOCATION (name, address, postalcode, city, country) VALUES (@name, @address, @postalcode, @city, @country);";
+                    string insertLocationStatement = @"INSERT INTO LOCATION (name, address, postalcode, city, country) VALUES (@name, @address, @postalcode, @city, @country); SELECT CAST(@@IDENTITY AS INT);";
+                    string getLocationStatement = @"SELECT name, address, postalcode, city, country FROM LOCATION WHERE locationid = @locationid;";
+                    int locationid;
+
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
-                        using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
+                        using (SqlCommand cmd = new SqlCommand(insertLocationStatement, sqlconnection, sqlTransaction))
                         {
-                            command.Parameters.AddWithValue("@name", location.Name);
-                            command.Parameters.AddWithValue("@address", location.Address);
-                            command.Parameters.AddWithValue("@postalcode", location.Postalcode);
-                            command.Parameters.AddWithValue("@city", location.City);
-                            command.Parameters.AddWithValue("@country", location.Country);
+                            cmd.Parameters.AddWithValue("@name", name);
+                            cmd.Parameters.AddWithValue("@address", address);
+                            cmd.Parameters.AddWithValue("@postalcode", postalcode);
+                            cmd.Parameters.AddWithValue("@city", city);
+                            cmd.Parameters.AddWithValue("@country", country);
 
-                            command.ExecuteNonQuery();
-
-                            command.CommandText = "SELECT CAST(@@Identity as INT);";
-                            var id = (int)command.ExecuteScalar();
-                            location.Id = id;
-
-                            sqlTransaction.Commit();
+                            locationid = (int) cmd.ExecuteScalar();
                         }
+
+                        using (SqlCommand cmd = new SqlCommand(getLocationStatement, sqlconnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@locationid", locationid);
+
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (reader.Read())
+                                {
+                                    string _name = (string)reader["name"];
+                                    string _address = (string)reader["address"];
+                                    string _postalcode = (string)reader["postalcode"];
+                                    string _city = (string)reader["city"];
+                                    string _country = (string)reader["country"];
+
+                                    location = new Location(_name, _address, _postalcode, _city, _country);
+                                }
+                            }
+                        }
+
+                        sqlTransaction.Commit();
                     }
                 }
             }
             catch (Exception)
             {
-                return false;
+                return null;
             }
-            return true;
+
+            return location;
         }
         public bool DeleteLocation(Location location)
         {
