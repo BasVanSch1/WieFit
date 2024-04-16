@@ -247,6 +247,56 @@ namespace WieFit.Common.DAL
             return plannedActivity;
         }
 
+        public List<PlannedActivity>? GetPlannedActivities(Location location)
+        {
+            List<PlannedActivity> plannedActivity = new List<PlannedActivity>();
+
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string plannedActivityStatement = "select PA.activityid, A.name AS ActivityName, A.description, PA.startdatetime, PA.enddatetime, L.name AS LocationName, U.name As CoachName FROM PLANNEDACTIVITY PA INNER JOIN ACTIVITY A ON PA.activityid = A.activityid INNER JOIN LOCATION L ON PA.locationid = L.locationid INNER JOIN USERS U ON PA.coachusername = U.username WHERE PA.locationid = @locationid;";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand cmd = new SqlCommand(plannedActivityStatement, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@locationid", location.Id);
+
+                            using (SqlDataReader sqlReader = cmd.ExecuteReader())
+                            {
+                                if (!sqlReader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (sqlReader.Read())
+                                {
+                                    int _activityId = (int)sqlReader["activityid"];
+                                    string _activityName = (string)sqlReader["ActivityName"];
+                                    string _activityDescription = (string)sqlReader["description"];
+                                    DateTime _startdatetime = (DateTime)sqlReader["startdatetime"];
+                                    DateTime _enddatetime = (DateTime)sqlReader["enddatetime"];
+                                    string _locationName = (string)sqlReader["LocationName"];
+                                    string _coachName = (string)sqlReader["CoachName"];
+
+                                    plannedActivity.Add(new PlannedActivity(_activityId, _activityName, _activityDescription, _startdatetime, _enddatetime, Coach.GetCoach(_coachName)));
+                                }
+                            }
+                        }
+                        sqlTransaction.Commit();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return plannedActivity;
+        }
+
         private Activity? MapActivity(SqlDataReader reader)
         {
             try
