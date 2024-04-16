@@ -34,11 +34,13 @@ namespace WieFit
         static void Main(string[] args)
         {
             Menu();
-
         }
 
-        static void AddLocation() 
+        static void CreateLocation() 
         {
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
             Console.Write("Enter location name: ");
             string _locationname = Console.ReadLine();
 
@@ -70,6 +72,7 @@ namespace WieFit
             int locationid = Convert.ToInt32(Console.ReadLine());
             
         }
+
         static void Login()
         {
             if (loginManager == null)
@@ -120,18 +123,6 @@ namespace WieFit
                     Console.ReadKey();
                 }
             }
-        }
-        static void GetActivity()
-        {
-            Console.Write("Enter an activity id:");
-            int id = Convert.ToInt32(Console.ReadLine());
-            Activity activity = Activity.GetActivity(id);
-            if (activity == null)
-            {
-                Console.WriteLine($"No Activity was found with id {id}");
-                return;
-            }
-            Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
         }
         static void AddResult()
         {
@@ -352,6 +343,8 @@ namespace WieFit
                 // Organisator
                 [15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
                 [16] = new KeyValuePair<string, Action>("Plan activity", PlanActivity),
+                [17] = new KeyValuePair<string, Action>("Create location", CreateLocation),
+                [18] = new KeyValuePair<string, Action>("Delete location", DeleteLocation),
 
                 // Everyone
                 [99] = new KeyValuePair<string, Action>("Logout", Logout),

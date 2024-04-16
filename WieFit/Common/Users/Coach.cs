@@ -10,7 +10,6 @@ namespace WieFit.Common.Users
 {
     internal class Coach : User
     {
-        private static readonly UserDAL userDAL = UserDAL.Instance;
         public Coach(string _username, string _name, string _email, string _address, string _phoneNumber, int _age, char _gender) :
             base (_username, _name, _email, _address, _phoneNumber, _age, _gender)
         {}

@@ -12,8 +12,8 @@ namespace WieFit.Common
     {
         public int Id { get;private set; }
         public string Description {get; private set; }
-        public Coach coach { get; private set; }
-        public Student student { get; private set; }
+        public Coach? coach { get; private set; }
+        public Student? student { get; private set; }
         public Advice(int _Id, string _Description, Coach _coach, Student _Student)
         {
             Id = _Id;
@@ -27,7 +27,7 @@ namespace WieFit.Common
             coach = _coach;
             student = _Student;
         }
-        public Advice(int _Id, string _Description,Coach _coach)
+        public Advice(int _Id, string _Description, Coach _coach)
         {
             Id = _Id;
             Description = _Description;
