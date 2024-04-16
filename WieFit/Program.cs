@@ -763,11 +763,6 @@ namespace WieFit
         }
         static void LookupLocation()
         {
-            // Get all locations
-            // Ask for locationid
-            // Get location from database
-            // print location information (including activities)
-
             Console.Clear();
             Console.WriteLine(menuHeader);
 
