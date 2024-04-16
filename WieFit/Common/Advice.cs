@@ -33,5 +33,10 @@ namespace WieFit.Common
             Description = _Description;
             coach = _coach;
         }
+
+        public override string ToString() // wordt dus echt wel gebruikt. geen idee wrm hij 0 references heeft.
+        {
+            return $"Coach: {coach.Name} | Advice: {Description}";
+        }
     }
 }
