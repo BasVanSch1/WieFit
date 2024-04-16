@@ -43,5 +43,10 @@ namespace WieFit.Common.Users
         {
             return userDAL.GiveAdvise(advice);
         }
+
+        public static List<Coach>? GetAllCoaches()
+        {
+            return userDAL.GetAllCoaches();
+        }
     }
 }

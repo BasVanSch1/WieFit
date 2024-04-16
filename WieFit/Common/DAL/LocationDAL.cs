@@ -176,7 +176,5 @@ namespace WieFit.Common.DAL
 
             return location;
         }
-
-
     }
 }

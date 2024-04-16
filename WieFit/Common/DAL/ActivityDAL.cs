@@ -71,37 +71,69 @@ namespace WieFit.Common.DAL
 
             return activity;
         }
-        public bool PlanActivity(PlannedActivity plannedactivity, Location location)
+        public PlannedActivity? PlanActivity(Activity activityTemplate, DateTime starttime, DateTime endtime, Coach coach, int locationId)
         {
+            PlannedActivity? activity = null;
+
             try
             {
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
-                    string query = @"INSERT INTO PLANNEDACTIVITY(locationid, activityid, startdatetime, enddatetime, coachusername) VALUES(@locationid, @activityid, @starttime, @endtime, @coachusername)";
+                    string insertActivityStatement = @"INSERT INTO PLANNEDACTIVITY(locationid, activityid, startdatetime, enddatetime, coachusername) VALUES(@locationid, @activityid, @starttime, @endtime, @coachusername);";
+                    string getActivityStatement = @"select PA.activityid, A.name AS ActivityName, A.description, PA.startdatetime, PA.enddatetime, L.locationid, U.username As CoachUsername FROM PLANNEDACTIVITY PA INNER JOIN ACTIVITY A ON PA.activityid = A.activityid INNER JOIN LOCATION L ON PA.locationid = L.locationid INNER JOIN USERS U ON PA.coachusername = U.username WHERE PA.activityid = @activityid and PA.locationid = @locationid and PA.startdatetime = @starttime;";
                     sqlConnection.Open();
 
                     using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
                     {
-                        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
+                        using (SqlCommand cmd = new SqlCommand(insertActivityStatement, sqlConnection, sqlTransaction))
                         {
-                            sqlCommand.Parameters.AddWithValue("@locationid", location.Id);
-                            sqlCommand.Parameters.AddWithValue("@activityid", plannedactivity.Id);
-                            sqlCommand.Parameters.AddWithValue("@starttime", plannedactivity.StartTime);
-                            sqlCommand.Parameters.AddWithValue("@endtime", plannedactivity.EndTime);
-                            sqlCommand.Parameters.AddWithValue("@coachusername", plannedactivity.Coach.Username);
-                            sqlCommand.ExecuteNonQuery();
+                            cmd.Parameters.AddWithValue("@locationid", locationId);
+                            cmd.Parameters.AddWithValue("@activityid", activityTemplate.Id);
+                            cmd.Parameters.AddWithValue("@starttime", starttime);
+                            cmd.Parameters.AddWithValue("@endtime", endtime);
+                            cmd.Parameters.AddWithValue("@coachusername", coach.Username);
 
-                            sqlTransaction.Commit();
+                            cmd.ExecuteNonQuery();
                         }
+
+                        using (SqlCommand cmd = new SqlCommand(getActivityStatement, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@locationid", locationId);
+                            cmd.Parameters.AddWithValue("@activityid", activityTemplate.Id);
+                            cmd.Parameters.AddWithValue("@starttime", starttime);
+
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (reader.Read())
+                                {
+                                    int _activityId = (int)reader["activityid"];
+                                    string _activityName = (string)reader["ActivityName"];
+                                    string _activityDescription = (string)reader["description"];
+                                    DateTime _startdatetime = (DateTime)reader["startdatetime"];
+                                    DateTime _enddatetime = (DateTime)reader["enddatetime"];
+                                    int _locationId = (int)reader["locationid"];
+                                    string _coachUsername = (string)reader["CoachUsername"];
+
+                                    activity = new PlannedActivity(_activityId, _activityName, _activityDescription, _startdatetime, _enddatetime, Coach.GetCoach(_coachUsername));
+                                }
+                            }
+                        }
+
+                        sqlTransaction.Commit();
                     }
                 }
             }
             catch (Exception)
             {
-                return false;
+                return null;
             }
 
-            return true;
+            return activity;
         }
         public Activity? GetActivity(int id)
         {
@@ -183,7 +215,7 @@ namespace WieFit.Common.DAL
             {
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
-                    string plannedActivityStatement = "select PA.activityid, A.name AS ActivityName, A.description, PA.startdatetime, PA.enddatetime, L.name AS LocationName, U.name As CoachName FROM PLANNEDACTIVITY PA INNER JOIN ACTIVITY A ON PA.activityid = A.activityid INNER JOIN LOCATION L ON PA.locationid = L.locationid INNER JOIN USERS U ON PA.coachusername = U.username;";
+                    string plannedActivityStatement = "select PA.activityid, A.name AS ActivityName, A.description, PA.startdatetime, PA.enddatetime, L.locationid, U.username As CoachUsername FROM PLANNEDACTIVITY PA INNER JOIN ACTIVITY A ON PA.activityid = A.activityid INNER JOIN LOCATION L ON PA.locationid = L.locationid INNER JOIN USERS U ON PA.coachusername = U.username;";
                     sqlConnection.Open();
 
                     using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
@@ -204,13 +236,14 @@ namespace WieFit.Common.DAL
                                     string _activityDescription = (string)sqlReader["description"];
                                     DateTime _startdatetime = (DateTime)sqlReader["startdatetime"];
                                     DateTime _enddatetime = (DateTime)sqlReader["enddatetime"];
-                                    string _locationName = (string)sqlReader["LocationName"];
+                                    int _locationId = (int)sqlReader["locationid"];
                                     string _coachUsername = (string)sqlReader["CoachUsername"];
 
                                     plannedActivity.Add(new PlannedActivity(_activityId, _activityName, _activityDescription, _startdatetime, _enddatetime, Coach.GetCoach(_coachUsername)));
                                 }
                             }
                         }
+
                         sqlTransaction.Commit();
                     }
                 }
@@ -230,7 +263,7 @@ namespace WieFit.Common.DAL
             {
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
-                    string plannedActivityStatement = "select PA.activityid, A.name AS ActivityName, A.description, PA.startdatetime, PA.enddatetime, L.name AS LocationName, U.username As CoachUsername FROM PLANNEDACTIVITY PA INNER JOIN ACTIVITY A ON PA.activityid = A.activityid INNER JOIN LOCATION L ON PA.locationid = L.locationid INNER JOIN USERS U ON PA.coachusername = U.username WHERE PA.locationid = @locationid ORDER BY PA.startdatetime;";
+                    string plannedActivityStatement = "select PA.activityid, A.name AS ActivityName, A.description, PA.startdatetime, PA.enddatetime, L.locationid, U.username As CoachUsername FROM PLANNEDACTIVITY PA INNER JOIN ACTIVITY A ON PA.activityid = A.activityid INNER JOIN LOCATION L ON PA.locationid = L.locationid INNER JOIN USERS U ON PA.coachusername = U.username WHERE PA.locationid = @locationid ORDER BY PA.startdatetime;";
                     sqlConnection.Open();
 
                     using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
@@ -253,7 +286,7 @@ namespace WieFit.Common.DAL
                                     string _activityDescription = (string)sqlReader["description"];
                                     DateTime _startdatetime = (DateTime)sqlReader["startdatetime"];
                                     DateTime _enddatetime = (DateTime)sqlReader["enddatetime"];
-                                    string _locationName = (string)sqlReader["LocationName"];
+                                    int _locationId = (int)sqlReader["locationid"];
                                     string _coachUsername = (string)sqlReader["CoachUsername"];
 
                                     plannedActivity.Add(new PlannedActivity(_activityId, _activityName, _activityDescription, _startdatetime, _enddatetime, Coach.GetCoach(_coachUsername)));
