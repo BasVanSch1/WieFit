@@ -223,8 +223,8 @@ namespace WieFit
             }
 
             Console.Write("Result value (only integers) : ");
-            float result;
-            while (!float.TryParse(Console.ReadLine(), out result))
+            decimal result;
+            while (!decimal.TryParse(Console.ReadLine(), out result))
             {
                 Console.WriteLine("Invalid value...");
                 Console.Write("Result value (only integers) : ");
@@ -452,7 +452,7 @@ namespace WieFit
                 [10] = new KeyValuePair<string, Action>("Give advice to Student", GiveAdvice),
 
                 // Organisator
-                // [15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
+                //[15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
                 // [16] = new KeyValuePair<string, Action>("Plan activity", PlanActivity),
 
                 // Everyone
@@ -757,9 +757,18 @@ namespace WieFit
 
             foreach (Result result in resultList)
             {
-                Console.WriteLine(result);
+                Console.WriteLine(
+                    $"""
+                    Activity:       {result.Activity.Name}
+                    Date:           {result.Date}
+                    Description:    {result.Description}
+                    Result value:   {result.Value}
+                    ======
+                    """);
             }
 
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
         static void LookupLocation()
         {
@@ -780,6 +789,8 @@ namespace WieFit
                 Console.ReadKey();
                 return;
             }
+
+            Console.WriteLine("Locaties:");
 
             foreach (Location loc in locationList)
             {
@@ -811,7 +822,7 @@ namespace WieFit
                     Console.Write("Enter a location ID to lookup more information (enter -1 to cancel):  ");
                 }
 
-                if (locationid == -1) // misschien een method van maken? is copy-paste van hierboven.
+                if (locationid == -1) // misschien een method van maken? is eigenlijk copy-paste van hierboven.
                 {
                     return;
                 }

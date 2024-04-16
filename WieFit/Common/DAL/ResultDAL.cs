@@ -54,7 +54,7 @@ namespace WieFit.Common.DAL
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string resultStatement = @"select R.activityid, A.name AS ActivityName, A.description AS ActivityDescription, R.datetime, R.description, r.result FROM RESULT R INNER JOIN ACTIVITY A ON R.activityid = A.activityid WHERE R.username = @username;";
+                    string resultStatement = @"select R.activityid, A.name AS ActivityName, A.description AS ActivityDescription, R.datetime, R.description, r.result FROM RESULT R INNER JOIN ACTIVITY A ON R.activityid = A.activityid WHERE R.username = @username ORDER BY R.datetime;";
                     connection.Open();
 
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -77,7 +77,7 @@ namespace WieFit.Common.DAL
                                     string _activityDescription = (string)reader["ActivityDescription"];
                                     DateTime _datetime = (DateTime)reader["datetime"];
                                     string _description = (string)reader["description"];
-                                    float _result = (float)reader["result"];
+                                    decimal _result = (decimal)reader["result"];
 
                                     results.Add(new Result(_datetime, _description, _result, new Activity(_activityId, _activityName, _activityDescription)));
                                 }
