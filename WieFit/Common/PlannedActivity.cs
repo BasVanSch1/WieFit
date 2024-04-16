@@ -24,7 +24,7 @@ namespace WieFit.Common
 
         public override string ToString()
         {
-            return $"Id: {Id}| Name: {Name}| Description {Description}| StartTime: {StartTime}| Endtime: {EndTime}| CoachName: {Coach.Name}";
+            return $"Id: {Id} | Name: {Name} | Description {Description} | StartTime: {StartTime} | Endtime: {EndTime} | CoachName: {Coach.Name}";
         }
     }
 }

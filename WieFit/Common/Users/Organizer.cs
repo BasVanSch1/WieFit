@@ -50,14 +50,9 @@ namespace WieFit.Common.Users
         {
             return userDAL.GetCoach(username);
         }
-        public List<Student> GetAllStudents()
+        public static Organizer ConverToOrganizer(User user)
         {
-            return userDAL.GetAllStudents();
+            return new Organizer(user.Username, user.Name, user.Email, user.Address, user.PhoneNumber, user.Age, user.Gender);
         }
-        public static Student GetStudent(string username)
-        {
-            return userDAL.GetStudent(username);
-        }
-
     }
 }
