@@ -227,20 +227,22 @@ namespace WieFit.Common.DAL
             }
             return coach;
         }
-        public List<Student>? GetAllStudents()
+        public List<Student>? GetStudentsFromCoach(Coach coach)
         {
             List<Student> students = new List<Student>();
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = @"SELECT username,name, email, address, phonenumber, age, gender FROM USERS WHERE type = 'S'";
+                    string query = @"SELECT U.username, U.name, U.email, U.address, U.phonenumber, U.age, U.gender, U.type FROM USERS U INNER JOIN USERSCOACH UC ON U.username = UC.username WHERE UC.coachusername = @coachusername";
                     connection.Open();
 
                     using(SqlTransaction transaction = connection.BeginTransaction())
                     {
                         using(SqlCommand command = new SqlCommand(query, connection, transaction))
                         {
+                            command.Parameters.AddWithValue("@coachusername", coach.Username);
+
                             using(SqlDataReader reader = command.ExecuteReader())
                             {
                                 if (!reader.HasRows)
@@ -264,60 +266,11 @@ namespace WieFit.Common.DAL
                         transaction.Commit();
                     }
                 }
-            }catch (Exception ex)
+            } catch (Exception ex)
             {
-                throw ex;
                 return null;
             }
             return students;
-        }
-        public Student GetStudent(string username)
-        {
-            Student? student = null;
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    string query = @"SELECT username,name, email, address, phonenumber, age, gender FROM USERS WHERE type = 'S' AND username = @username; ";
-                    connection.Open();
-
-                    using (SqlTransaction transaction = connection.BeginTransaction())
-                    {
-                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
-                        {
-                            command.Parameters.AddWithValue("@username", username);
-
-                            using (SqlDataReader reader = command.ExecuteReader())
-                            {
-
-                                if (reader.Read())
-                                {
-                                    string _username = (string)reader["username"];
-                                    string _name = (string)reader["name"];
-                                    string _email = (string)reader["email"];
-                                    string _address = (string)reader["address"];
-                                    string _phonenumber = (string)reader["phonenumber"];
-                                    int _age = (int)reader["age"];
-                                    char _gender = reader["gender"].ToString().ToCharArray().First();
-
-                                    student = new Student(_username, _name, _email, _address, _phonenumber, _age, _gender);
-                                }
-                                else
-                                {
-                                    return null;
-                                }
-                            }
-                        }
-                        transaction.Commit();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-                return null;
-            }
-            return student;
         }
         public bool GiveAdvise(Advice advice)
         {
@@ -348,7 +301,7 @@ namespace WieFit.Common.DAL
             }
             return true;
         }
-        public List<Advice>? GetAdvice(string username)
+        public List<Advice>? GetAdvice(User user)
         {
             List<Advice>? advices = new List<Advice>();
             
@@ -363,7 +316,7 @@ namespace WieFit.Common.DAL
                     {
                         using(SqlCommand command = new SqlCommand(query,connection, transaction))
                         {
-                            command.Parameters.AddWithValue("@username", username);
+                            command.Parameters.AddWithValue("@username", user.Username);
 
                             using(SqlDataReader reader = command.ExecuteReader()) 
                             {
@@ -424,6 +377,48 @@ namespace WieFit.Common.DAL
             }
 
             return true;
+        }
+        public char? GetUserType(User user)
+        {
+            char? usertype = null;
+
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string usernameStatement = @"SELECT type FROM USERS WHERE username = @username";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand cmd = new SqlCommand(usernameStatement, sqlConnection, sqlTransaction))
+                        {
+                            cmd.Parameters.AddWithValue("@username", user.Username);
+                            
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (reader.Read())
+                                {
+                                    usertype = (char)reader["type"].ToString().ToCharArray().First();
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+            }
+            catch (Exception ex )
+            {
+                throw ex;
+                return null;
+            }
+
+            return usertype;
         }
     }
 }

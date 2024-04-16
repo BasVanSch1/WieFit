@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WieFit.Common.Users;
 
 namespace WieFit.Common.DAL
 {
@@ -69,14 +70,14 @@ namespace WieFit.Common.DAL
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
                 return false;
             }
+
             return true;
         }
-        public Activity GetActivity(int id)
+        public Activity? GetActivity(int id)
         {
             try
             {
@@ -98,9 +99,6 @@ namespace WieFit.Common.DAL
                             }
                         }
                     }
-                    {
-
-                    }
                 }
             }
             catch (Exception)
@@ -119,7 +117,7 @@ namespace WieFit.Common.DAL
                     string query = "SELECT activityid, name, description FROM ACTIVITY";
                     sqlConnection.Open();
 
-                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction()) // wss niet eens nodig maarja..
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
                     {
                         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection, sqlTransaction))
                         {
@@ -148,9 +146,57 @@ namespace WieFit.Common.DAL
             {
                 return null;
             }
+
             return activities;
         }
-        private Activity MapActivity(SqlDataReader reader)
+        public List<PlannedActivity>? GetPlannedActivities()
+        {
+            List<PlannedActivity> plannedActivity = null;
+
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+                {
+                    string plannedActivityStatement = "select PA.activityid, A.name AS ActivityName, A.description, PA.startdatetime, PA.enddatetime, L.name AS LocationName, U.name As CoachName FROM PLANNEDACTIVITY PA INNER JOIN ACTIVITY A ON PA.activityid = A.activityid INNER JOIN LOCATION L ON PA.locationid = L.locationid INNER JOIN USERS U ON PA.coachusername = U.username;";
+                    sqlConnection.Open();
+
+                    using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (SqlCommand sqlCommand = new SqlCommand(plannedActivityStatement, sqlConnection, sqlTransaction))
+                        {
+                            using (SqlDataReader sqlReader = sqlCommand.ExecuteReader())
+                            {
+                                if (!sqlReader.HasRows)
+                                {
+                                    return null;
+                                }
+
+                                while (sqlReader.Read())
+                                {
+                                    int _activityId = (int)sqlReader["activityid"];
+                                    string _activityName = (string)sqlReader["ActivityName"];
+                                    string _activityDescription = (string)sqlReader["description"];
+                                    DateTime _startdatetime = (DateTime)sqlReader["startdatetime"];
+                                    DateTime _enddatetime = (DateTime)sqlReader["enddatetime"];
+                                    string _locationName = (string)sqlReader["LocationName"];
+                                    string _coachName = (string)sqlReader["CoachName"];
+
+                                    plannedActivity.Add(new PlannedActivity(_activityId, _activityName, _activityDescription, _startdatetime, _enddatetime, Coach.GetCoach(_coachName)));
+                                }
+                            }
+                        }
+                        sqlTransaction.Commit();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return plannedActivity;
+        }
+        private Activity? MapActivity(SqlDataReader reader)
         {
             try
             {
@@ -161,10 +207,11 @@ namespace WieFit.Common.DAL
                 );
                 return activity;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
         }
+
     }
 }

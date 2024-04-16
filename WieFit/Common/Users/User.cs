@@ -11,6 +11,7 @@ namespace WieFit.Common.Users
     {
         protected readonly UserDAL userDAL = UserDAL.Instance;
         protected readonly LocationDAL locationDAL = LocationDAL.Instance;
+        protected readonly ActivityDAL activityDAL = ActivityDAL.Instance;
 
         public string Username { get; private set; }
         public string Name { get; private set; }
@@ -19,7 +20,7 @@ namespace WieFit.Common.Users
         public string PhoneNumber {  get; private set; }
         public int Age { get; private set; }
         public char Gender { get; private set; }
-        public char Type { get; private set; }
+        public char? Type { get; private set; }
 
         public User(string _username, string _name, string _email, string _address, string _phoneNumber, int _age, char _gender)
         {
@@ -30,10 +31,25 @@ namespace WieFit.Common.Users
             PhoneNumber = _phoneNumber;
             Age = _age;
             Gender = _gender;
+            Type = GetUserType(this);
         }
         public List<Location>? GetAllLocations()
         {
             return locationDAL.GetAllLocations();
+        }
+
+        public List<PlannedActivity>? GetPlannedActivities()
+        {
+            return activityDAL.GetPlannedActivities();
+        }
+
+        private char? GetUserType(User user)
+        {
+            return userDAL.GetUserType(user);
+        }
+        public List<Advice> GetAdvice()
+        {
+            return userDAL.GetAdvice(this);
         }
     }
 }

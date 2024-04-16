@@ -23,7 +23,8 @@ namespace WieFit
                   \ \/  \/ / | |/ _ \  __| | | __|
                    \  /\  /  | |  __/ |    | | |_ 
                     \/  \/   |_|\___|_|    |_|\__|
-            ==========================================";
+            ==========================================
+            ";
 
         static void Main(string[] args)
         {
@@ -89,12 +90,14 @@ namespace WieFit
             {
                 loginManager = new LoginManager();
             }
+
             bool loggedIn = LoggedInUser != null;
 
             while (!loggedIn)
             {
                 Console.Clear();
-                Console.WriteLine(menuHeader + "\n");
+                Console.WriteLine(menuHeader);
+
                 Console.Write("Please enter your username: ");
                 string? username = Console.ReadLine();
                 while (username == null || username.Length <= 0)
@@ -117,9 +120,12 @@ namespace WieFit
 
                 if (user != null)
                 {
-                    Console.WriteLine("Succesfully logged in.");
                     LoggedInUser = user;
                     loggedIn = true;
+                    Console.WriteLine("Succesfully logged in.");
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                    Console.Clear();
                 }
                 else
                 {
@@ -158,7 +164,46 @@ namespace WieFit
                 return;
             }
 
-            Activity activity = Activity.GetActivity(1);
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            List<Activity>? activityList = Activity.GetAllActivities();
+
+            if (activityList == null || activityList.Count == 0)
+            {
+                Console.WriteLine("There are no activities registered in the system. Ask an organizer to add some!");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+            
+            foreach(Activity act in activityList)
+            {
+                Console.WriteLine($"ID: {act.Id} | Name: {act.Name} | Description: {act.Description}");
+            }
+
+            Console.Write("Enter the activity ID you which to add a result for: ");
+            int activityid = -1;
+            while (!Int32.TryParse(Console.ReadLine(), out activityid))
+            {
+                Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                Console.WriteLine("Enter the activity ID you which to add a result for:");
+            }
+
+            Activity? activity = Activity.GetActivity(activityid);
+            while (activity == null)
+            {
+                Console.WriteLine("That activity does not exist. Try again.");
+                Console.Write("Enter the activity ID you which to add a result for: ");
+
+                while (!Int32.TryParse(Console.ReadLine(), out activityid))
+                {
+                    Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                    Console.WriteLine("Enter the activity ID you which to add a result for:");
+                }
+
+                activity = Activity.GetActivity(activityid); // HEEL slecht, telkens naar de database vragen voor de activity. 
+            }
 
             Console.Write("When is this result made? enter(YYYY/MM/DD HH:MM:SS): ");
             DateTime date;
@@ -169,9 +214,15 @@ namespace WieFit
             }
 
             Console.Write("Add result description: ");
-            string description = Console.ReadLine();
+            string? description = Console.ReadLine();
+            while (description == null || description.Length <= 0)
+            {
+                Console.Write("Description cannot be empty. Try again.");
+                Console.Write("Add result description: ");
+                description = Console.ReadLine();
+            }
 
-            Console.WriteLine("Result value (only integers) : ");
+            Console.Write("Result value (only integers) : ");
             float result;
             while (!float.TryParse(Console.ReadLine(), out result))
             {
@@ -179,9 +230,9 @@ namespace WieFit
                 Console.WriteLine("Result value (only integers) : ");
             }
 
-            Result newresult = new Result(date, description, result);
+            Result newresult = new Result(date, description, result, activity);
 
-            if (newresult.AddResult(LoggedInUser, activity))
+            if (newresult.AddResult(LoggedInUser))
             {
                 Console.WriteLine("SUCCESS!");
             }
@@ -285,23 +336,6 @@ namespace WieFit
                 }
             }
         }
-        static void GetAllStudents()
-        {
-            Organizer O = new Organizer("Organisator", "name", "mail", "address", "telefoonnummer", 0, 'M');
-            List<Student> students = O.GetAllStudents();
-            Console.WriteLine("Students: ");
-            if (students == null)
-            {
-                Console.WriteLine("there are no students");
-            }
-            else
-            {
-                foreach(Student s in students)
-                {
-                    Console.WriteLine($"username: {s.Username}| name: {s.Name}| email: {s.Email}| address: {s.Address}| phonenumber: {s.PhoneNumber}| age:{s.Age}| gender:{s.Gender} ");
-                }
-            }
-        }
         static void GetCoach()
         {
             Console.Write("Enter coach username: ");
@@ -314,85 +348,96 @@ namespace WieFit
                 Console.WriteLine($"username: {c.Username}| name: {c.Name}| email: {c.Email}| address: {c.Address}| phonenumber: {c.PhoneNumber}| age:{c.Age}| gender:{c.Gender}");
             }
         }
-        static void GetStudent()
+        static void GiveAdvice()
         {
-            Console.Write("Enter student username: ");
-            string username = Console.ReadLine();
-            Student? s = Coach.GetStudent(username);
-            if (s == null)
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            if (!(LoggedInUser.Type == 'C' || LoggedInUser.Type == 'c' || LoggedInUser.Type == 'O' || LoggedInUser.Type == 'o'))
             {
-                Console.WriteLine("coach is null");
-            }
-            else
-            {
-                Console.WriteLine($"username: {s.Username}| name: {s.Name}| email: {s.Email}| address: {s.Address}| phonenumber: {s.PhoneNumber}| age:{s.Age}| gender:{s.Gender}");
-            }
-        }
-        static void GiveAdvise()
-        {
-            Student? student = null;
-            Coach? coach = null;
-            GetAllStudents();
-            Console.Write("Enter student username: ");
-            string Susername = Console.ReadLine();
-            student = Coach.GetStudent(Susername);
-            while (student == null)
-            {
-                Console.WriteLine("Please enter correct Username");
-                Console.Write("Enter student username: ");
-                Susername = Console.ReadLine();
-                student = Coach.GetStudent(Susername);
-            }
-            GetAllCoaches();
-            Console.Write("Enter Coach Username");
-            string Cusername = Console.ReadLine();
-            coach = Organizer.GetCoach(Cusername);
-            while( coach == null )
-            {
-                Console.WriteLine("Please enter correct Username");
-                Console.Write("Enter Coach Username");
-                Cusername = Console.ReadLine();
-                coach = Organizer.GetCoach(Cusername);
+                Console.WriteLine("You do not have permission to use this function.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
             }
 
-            Console.Write("Type your advise here: ");
-            string Advice = Console.ReadLine();
+            Coach coach = Coach.ConvertToCoach(LoggedInUser);
+            List<Student>? students = coach.GetStudents();
+            Dictionary<string, Student> selectionList = new Dictionary<string, Student>();
 
-            Advice advice = new Advice(Advice,coach, student);
-            if (coach.GiveAdvise(advice))
+            if (students == null)
             {
-                Console.WriteLine("Succes!");
+                Console.WriteLine("You have no students. Ask an organizer to add some.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
             }
-        }
-        static void GetAdvice()
-        {
-            Student s = null;
-            Console.Write("Enter Username: ");
-            string username = Console.ReadLine();
-            s = Coach.GetStudent(username);
-            while (s == null)
+
+            foreach (Student student in students)
             {
-                Console.WriteLine("Please enter a correct username");
-                Console.Write("Enter Username: ");
-                username = Console.ReadLine();
-                s = Coach.GetStudent(username);
-            }
-            List<Advice> advices = null;
-            advices = s.GetAdvice(username);
-            if (advices == null)
-            {
-                Console.WriteLine("there are no advices");
-            }
-            else
-            {
-                Console.WriteLine("Advice: ");
-                foreach (Advice a in advices)
+                string _gender = "undefined";
+                switch (student.Gender)
                 {
-                    Console.WriteLine($"Id: {a.Id}|Advice: {a.Description}| Coach: {a.coach.Name}");
+                    case 'F' or 'f':
+                        _gender = "Female";
+                        break;
+                    case 'M' or 'm':
+                        _gender = "Male";
+                        break;
+                    case 'O' or 'o':
+                        _gender = "Other";
+                        break;
+                }
+
+                selectionList.Add(student.Username, student);
+                Console.WriteLine($"Username: {student.Username} | Name: {student.Name} | Age: {student.Age} | Gender: {_gender}");
+            }
+            
+            Console.WriteLine("Select a student (username)");
+            string? selection = Console.ReadLine();
+            while (selection == null || selection.Length <= 0)
+            {
+                Console.WriteLine("Username cannot be empty. Please try again.");
+                Console.WriteLine("Select a student (username)");
+                selection = Console.ReadLine();
+            }
+
+            while (!selectionList.ContainsKey(selection))
+            {
+                Console.WriteLine("That student does not exist. Pleas try again.");
+
+                Console.WriteLine("Select a student (username)");
+                selection = Console.ReadLine();
+                while (selection == null || selection.Length <= 0)
+                {
+                    Console.WriteLine("Username cannot be empty. Please try again.");
+                    Console.WriteLine("Select a student (username)");
+                    selection = Console.ReadLine();
                 }
             }
-            
-            
+
+            Student selectedStudent = selectionList[selection];
+
+            Console.WriteLine($"Enter your advice to {selectedStudent.Name}: ");
+            string? adviceText = Console.ReadLine();
+            while (adviceText == null || adviceText.Length <= 0)
+            {
+                Console.WriteLine("Advice cannot be empty. Please try again.");
+                Console.WriteLine($"Enter your advice to {selectedStudent.Name}: ");
+                adviceText = Console.ReadLine();
+            }
+
+            Advice advice = new Advice(adviceText, coach, selectedStudent);
+            if (coach.GiveAdvice(selectedStudent, advice))
+            {
+                Console.WriteLine($"Succesfully gave advice to {selectedStudent.Name}.");
+            } else
+            {
+                Console.WriteLine("Failed to give advice.");
+            }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
         static void Logout()
         {
@@ -419,49 +464,80 @@ namespace WieFit
 
             Dictionary<int, KeyValuePair<string, Action>> menuItems = new()
             {
+                // Student
+                // [1] = new KeyValuePair<string, Action>("Register for an activity", RegisterForActivity),
+                // [2] = new KeyValuePair<string, Action>("Unregister for an activity", UnregisterForActivity),
+                [3] = new KeyValuePair<string, Action>("Look at Advice from Coach", LookupAdvice),
+                // [4] = new KeyValuePair<string, Action>("Lookup location information", LookupLocation),
+                [5] = new KeyValuePair<string, Action>("Add result (activity)", AddResult),
+                [6] = new KeyValuePair<string, Action>("Lookup results", LookupResult),
+                
+                // Coach
+                [10] = new KeyValuePair<string, Action>("Give advice to Student", GiveAdvice),
+
+                // Organisator
+                [15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
+                [16] = new KeyValuePair<string, Action>("Plan activity", PlanActivity),
+
+                // Everyone
                 [99] = new KeyValuePair<string, Action>("Logout", Logout),
-                [1] = new KeyValuePair<string, Action>("Get all locations", GetAllLocations),
-                [2] = new KeyValuePair<string, Action>("Add result", AddResult),
             };
-
-            while (LoggedInUser == null)
-            {
-                Console.Clear();
-                Console.WriteLine(menuHeader);
-
-                foreach (KeyValuePair<int, KeyValuePair<string, Action>> pair in loginMenu)
-                {
-                    Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
-                }
-
-                int choice = -1;
-                Console.Write("Enter a menu item number: ");
-                while (!Int32.TryParse(Console.ReadLine(), out choice))
-                {
-                    Console.WriteLine("Invalid input. Please enter an integer [0-99]");
-                    Console.Write("Enter a menu item number: ");
-                }
-
-                if (loginMenu.TryGetValue(choice, out KeyValuePair<string, Action> action))
-                {
-                    action.Value();
-                }
-                else
-                {
-                    Console.WriteLine("That option does not exist. Try again.");
-                    Console.Write("Press any key to continue...");
-                    Console.ReadKey();
-                }
-            }
 
             while (inMenu)
             {
                 Console.Clear();
                 Console.WriteLine(menuHeader);
 
+                while (LoggedInUser == null)
+                {
+                    foreach (KeyValuePair<int, KeyValuePair<string, Action>> pair in loginMenu)
+                    {
+                        Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                    }
+
+                    int loginChoice = -1;
+                    Console.Write("Enter a menu item number: ");
+                    while (!Int32.TryParse(Console.ReadLine(), out loginChoice))
+                    {
+                        Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                        Console.Write("Enter a menu item number: ");
+                    }
+
+                    if (loginMenu.TryGetValue(loginChoice, out KeyValuePair<string, Action> loginAction))
+                    {
+                        loginAction.Value();
+                    }
+                    else
+                    {
+                        Console.WriteLine("That option does not exist. Try again.");
+                        Console.Write("Press any key to continue...");
+                        Console.ReadKey();
+                    }
+                }
+
+                Console.Clear();
+                Console.WriteLine(menuHeader);
+
                 foreach (KeyValuePair<int, KeyValuePair<string, Action>> pair in menuItems)
                 {
-                    Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                    switch (LoggedInUser.Type)
+                    {
+                        case 'S' or 's': // show only student items
+                            if (pair.Key >= 1 && pair.Key <= 5 || pair.Key == 99)
+                            {
+                                Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                            }
+                            break;
+                        case 'C' or 'c': // show only student + coach items
+                            if (pair.Key >= 1 && pair.Key <= 10 || pair.Key == 99)
+                            {
+                                Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                            }
+                            break;
+                        case 'O' or 'o': // show everything
+                            Console.WriteLine($"{pair.Key}) {pair.Value.Key}");
+                            break;
+                    }
                 }
 
                 int choice = -1;
@@ -654,6 +730,66 @@ namespace WieFit
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
             return;
+        }
+
+        static void LookupAdvice()
+        {
+            if (LoggedInUser == null)
+            {
+                return;
+            }    
+
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            Student student = Student.ConverToStudent(LoggedInUser);
+            List<Advice> adviceList = student.GetAdvice();
+
+            if (adviceList.Count > 0)
+            {
+                foreach (Advice advice in adviceList)
+                {
+                    Console.WriteLine(advice);
+                }
+            } else
+            {
+                Console.WriteLine("You have no advice yet. Ask your coach!");
+            }
+
+            Console.Write("Press any key to continue...");
+            Console.ReadKey();
+        }
+        static void LookupResult()
+        {
+
+            // convert loggedinuser to student
+            // put all results from student in a list
+            // print results to screen
+
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            if (LoggedInUser == null)
+            {
+                return;
+            }
+
+            Student? student = Student.ConverToStudent(LoggedInUser);
+            List<Result>? resultList = student.GetResults();
+
+            if (resultList == null)
+            {
+                Console.WriteLine("You have no results yet. Go do an activity and add your results!");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            foreach (Result result in resultList)
+            {
+                Console.WriteLine(result);
+            }
+
         }
     }
 }
