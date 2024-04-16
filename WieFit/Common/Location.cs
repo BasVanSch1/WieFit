@@ -42,10 +42,6 @@ internal class Location
         Country = _country;
     }
 
-    public bool AddLocation()
-    {
-        return locationDAL.Addlocation(this);
-    }
     public bool DeleteLocation()
     {
         return locationDAL.DeleteLocation(this);
@@ -59,7 +55,12 @@ internal class Location
     public static Location? GetLocation(int id)
     {
         return locationDAL.GetLocation(id);
-    } 
+    }
+
+    public static Location? CreateLocation(string _name, string _address, string _postalcode, string _city, string _country)
+    {
+        return locationDAL.CreateLocation(_name, _address, _postalcode, _city, _country);
+    }
 
     private List<PlannedActivity>? GetPlannedActivities()
     {

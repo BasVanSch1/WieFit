@@ -9,9 +9,7 @@ namespace WieFit.Common.Users
 {
     internal class User
     {
-        protected readonly UserDAL userDAL = UserDAL.Instance;
-        protected readonly LocationDAL locationDAL = LocationDAL.Instance;
-        protected readonly ActivityDAL activityDAL = ActivityDAL.Instance;
+        protected static readonly UserDAL userDAL = UserDAL.Instance;
 
         public string Username { get; private set; }
         public string Name { get; private set; }

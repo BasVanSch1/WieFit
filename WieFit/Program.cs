@@ -34,42 +34,18 @@ namespace WieFit
         static void Main(string[] args)
         {
             Menu();
-
         }
 
-        static void AddLocation() 
-        {
-            Console.Write("Enter location name: ");
-            string _locationname = Console.ReadLine();
-
-            Console.Write("Enter location adress: ");
-            string _locationadress = Console.ReadLine();
-
-            Console.Write("Enter postalcode: ");
-            string _postalcode = Console.ReadLine();
-
-            Console.Write("Enter city: ");
-            string _city = Console.ReadLine();
-
-            Console.Write("Enter country: ");
-            string _country = Console.ReadLine();
-            Location location = new Location(_locationname, _locationadress, _postalcode, _city, _country);
-            
-            if (location.AddLocation())
-            {
-                Console.WriteLine("SUCCESS@?@");
-            } else
-            {
-                Console.WriteLine("FAILED..");
-            }
-            
-        }
         static void DeleteLocation() 
         {
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
             Console.Write("What location would you like to delete?(Enter location id)");
             int locationid = Convert.ToInt32(Console.ReadLine());
             
         }
+
         static void Login()
         {
             if (loginManager == null)
@@ -120,18 +96,6 @@ namespace WieFit
                     Console.ReadKey();
                 }
             }
-        }
-        static void GetActivity()
-        {
-            Console.Write("Enter an activity id:");
-            int id = Convert.ToInt32(Console.ReadLine());
-            Activity activity = Activity.GetActivity(id);
-            if (activity == null)
-            {
-                Console.WriteLine($"No Activity was found with id {id}");
-                return;
-            }
-            Console.WriteLine($"Id: {activity.Id} Name:{activity.Name} Description: {activity.Description} ");
         }
         static void AddResult()
         {
@@ -352,6 +316,8 @@ namespace WieFit
                 // Organisator
                 [15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
                 [16] = new KeyValuePair<string, Action>("Plan activity", PlanActivity),
+                [17] = new KeyValuePair<string, Action>("Create location", CreateLocation),
+                [18] = new KeyValuePair<string, Action>("Delete location", DeleteLocation),
 
                 // Everyone
                 [99] = new KeyValuePair<string, Action>("Logout", Logout),
@@ -1103,6 +1069,115 @@ namespace WieFit
             } else
             {
                 Console.WriteLine("Succesfully planned in the activity!");
+            }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+        }
+        static void CreateLocation()
+        {
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            Console.Write("Enter location name: ");
+            string? name = Console.ReadLine();
+            while (name == null || name.Length <= 0)
+            {
+                Console.WriteLine("Location name cannot be empty. try again.");
+                Console.Write("Enter location name: ");
+                name = Console.ReadLine();
+            }
+
+
+            Console.Write("Enter location address: ");
+            string? address = Console.ReadLine();
+            while (address == null || address.Length <= 0)
+            {
+                Console.WriteLine("Location address cannot be empty. try again.");
+                Console.Write("Enter location address: ");
+                address = Console.ReadLine();
+            }
+
+            Console.Write("Enter postalcode: ");
+            string? postalCode = Console.ReadLine();
+            while (postalCode == null || postalCode.Length <= 0)
+            {
+                Console.WriteLine("Postalcode cannot be empty. try again.");
+                Console.Write("Enter postalcode: ");
+                postalCode = Console.ReadLine();
+            }
+
+            Console.Write("Enter city: ");
+            string? city = Console.ReadLine();
+            while (city == null || city.Length <= 0)
+            {
+                Console.WriteLine("City cannot be empty. try again.");
+                Console.Write("Enter city: ");
+                city = Console.ReadLine();
+            }
+
+            Console.Write("Enter country: ");
+            string? country = Console.ReadLine();
+            while (country == null || country.Length <= 0)
+            {
+                Console.WriteLine("Country cannot be empty. try again.");
+                Console.Write("Enter country: ");
+                country = Console.ReadLine();
+            }
+
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            Console.WriteLine(
+                $"""
+                ======
+                Name:       {name}
+                Address:    {address}
+                Postalcode: {postalCode}
+                City:       {city}
+                Country:    {country}
+                ======
+                """);
+            Console.Write("Are you sure you want to create this location? (Y/N): ");
+
+            string? confirmation = Console.ReadLine();
+
+            while (confirmation == null || confirmation.Length == 0)
+            {
+                Console.WriteLine("Input cannot be empty. Try again.");
+                Console.Write("Are you sure you want to create this location? (Y/N): ");
+                confirmation = Console.ReadLine();
+            }
+
+            while (!(confirmation.ToUpper() == "Y" || confirmation.ToUpper() == "N"))
+            {
+                Console.WriteLine("Invalid input. Enter 'Y' or 'N'");
+
+                Console.Write("Are you sure you want to create this location? (Y/N): ");
+                confirmation = Console.ReadLine();
+                while (confirmation == null || confirmation.Length == 0)
+                {
+                    Console.WriteLine("Input cannot be empty. Try again.");
+                    Console.Write("Are you sure you want to create this location? (Y/N): ");
+                    confirmation = Console.ReadLine();
+                }
+            }
+
+            if (confirmation.ToUpper() == "N")
+            {
+                Console.WriteLine("Creating location CANCELLED");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            Location? location = Location.CreateLocation(name, address, postalCode, city, country);
+            if (location == null)
+            {
+                Console.WriteLine("Failed to create location. try again later.");
+            } else
+            {
+                Console.WriteLine("Succesfully created location!");
             }
 
             Console.WriteLine("Press any key to continue...");
