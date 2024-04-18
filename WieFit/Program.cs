@@ -1,4 +1,6 @@
-﻿using WieFit.Common;
+﻿using System.Diagnostics.Metrics;
+using System.Net;
+using WieFit.Common;
 using WieFit.Common.Users;
 
 namespace WieFit
@@ -291,6 +293,7 @@ namespace WieFit
                 
                 // Coach
                 [10] = new KeyValuePair<string, Action>("Give advice to Student", GiveAdvice),
+                [11] = new KeyValuePair<string, Action>("Lookup student's Results", LookupStudentResults),
 
                 // Organisator
                 [15] = new KeyValuePair<string, Action>("Create activity (template)", CreateActivity),
@@ -628,29 +631,14 @@ namespace WieFit
                 return;
             }
 
-            List<Location>? locationList = Location.GetAllLocations();
+            PrintLocations();
 
-            if (locationList == null || locationList.Count == 0)
-            {
-                Console.WriteLine("There are no locations registered in the system. Ask an organizer to add some.");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey();
-                return;
-            }
-
-            Console.WriteLine("Locaties:");
-
-            foreach (Location loc in locationList)
-            {
-                Console.WriteLine($"ID: {loc.Id} | Name: {loc.Name} | Address: {loc.Address} | Postalcode: {loc.Postalcode} | City: {loc.City} | Country: {loc.Country}");
-            }
-
-            Console.Write("Enter a location ID to lookup more information (enter -1 to cancel):  ");
-            int locationid = -1;
+            Console.Write("Enter a location ID to lookup more information (enter -1 to cancel): ");
+            int locationid;
             while (!Int32.TryParse(Console.ReadLine(), out locationid))
             {
                 Console.WriteLine("Invalid input. Please enter an integer [0-99]");
-                Console.Write("Enter a location ID to lookup more information (enter -1 to cancel):  ");
+                Console.Write("Enter a location ID to lookup more information (enter -1 to cancel): ");
             }
 
             if (locationid == -1)
@@ -1183,6 +1171,159 @@ namespace WieFit
             // select a location
             // confirm selection
             // delete
+
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            if (LoggedInUser == null)
+            {
+                return;
+            }
+
+            PrintLocations();
+
+            Console.Write("Enter a location ID to delete (enter -1 to cancel): ");
+            int locationid;
+            while (!Int32.TryParse(Console.ReadLine(), out locationid))
+            {
+                Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                Console.Write("Enter a location ID to lookup more information (enter -1 to cancel): ");
+            }
+
+            if (locationid == -1)
+            {
+                return;
+            }
+
+            Location? location = Location.GetLocation(locationid);
+            while (location == null)
+            {
+                Console.WriteLine("That location does not exist. Try again.");
+                Console.Write("Enter a location ID to delete (enter -1 to cancel): ");
+
+                while (!Int32.TryParse(Console.ReadLine(), out locationid))
+                {
+                    Console.WriteLine("Invalid input. Please enter an integer [0-99]");
+                    Console.Write("Enter a location ID to delete (enter -1 to cancel): ");
+                }
+
+                if (locationid == -1)
+                {
+                    return;
+                }
+
+                location = Location.GetLocation(locationid); // HEEL slecht, telkens naar de database vragen voor de locatie. maarja, wat is een 'beetje' technical debt nou?
+            }
+
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+            PrintLocationInformation(location);
+            Console.Write("Are you sure you want to delete this location? (Y/N): ");
+
+            string? confirmation = Console.ReadLine();
+
+            while (confirmation == null || confirmation.Length == 0)
+            {
+                Console.WriteLine("Input cannot be empty. Try again.");
+                Console.Write("Are you sure you want to delete this location? (Y/N): ");
+                confirmation = Console.ReadLine();
+            }
+
+            while (!(confirmation.ToUpper() == "Y" || confirmation.ToUpper() == "N"))
+            {
+                Console.WriteLine("Invalid input. Enter 'Y' or 'N'");
+
+                Console.Write("Are you sure you want to delete this location? (Y/N): ");
+                confirmation = Console.ReadLine();
+                while (confirmation == null || confirmation.Length == 0)
+                {
+                    Console.WriteLine("Input cannot be empty. Try again.");
+                    Console.Write("Are you sure you want to delete this location? (Y/N): ");
+                    confirmation = Console.ReadLine();
+                }
+            }
+
+            if (confirmation.ToUpper() == "N")
+            {
+                Console.WriteLine("Deleting location CANCELLED");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            if (location.DeleteLocation())
+            {
+                Console.WriteLine("Location deleted.");
+            } else
+            {
+                Console.WriteLine("Failed to delete location.");
+            }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+
+        }
+
+        static void LookupStudentResults()
+        {
+
+        }
+
+        static void PrintLocations()
+        {
+            List<Location>? locationList = Location.GetAllLocations();
+
+            if (locationList == null || locationList.Count == 0)
+            {
+                Console.WriteLine("There are no locations registered in the system. Ask an organizer to add some.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("Locaties:");
+
+            foreach (Location loc in locationList)
+            {
+                Console.WriteLine($"ID: {loc.Id} | Name: {loc.Name} | Address: {loc.Address} | Postalcode: {loc.Postalcode} | City: {loc.City} | Country: {loc.Country}");
+            }
+        }
+
+        static void PrintLocationInformation(Location location)
+        {
+            Console.WriteLine(
+                $"""
+                ID:             {location.Id}
+                Name:           {location.Name}
+                Address:        {location.Address}
+                Postalcode:     {location.Postalcode}
+                City:           {location.City}
+                Country:        {location.Country}
+                Description:    {location.Description}
+
+                Planned activities:
+                ======
+                """);
+
+            if (location.PlannedActivities == null || location.PlannedActivities.Count == 0)
+            {
+                Console.WriteLine("There are no activities planned for this location.");
+                Console.WriteLine("======");
+            }
+            else
+            {
+                foreach (PlannedActivity activity in location.PlannedActivities)
+                {
+                    Console.WriteLine($"""
+                        Name:           {activity.Name}
+                        Description:    {activity.Description}
+                        Start time:     {activity.StartTime}
+                        End time:       {activity.EndTime}
+                        Coach:          {activity.Coach.Name}
+                        ======
+                        """);
+                }
+            }
         }
     }
 }

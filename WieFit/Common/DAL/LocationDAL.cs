@@ -87,6 +87,7 @@ namespace WieFit.Common.DAL
                 {
                     sqlconnection.Open();
                     string query = "DELETE FROM LOCATION WHERE locationid = @locationid";
+
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
                         using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
@@ -101,13 +102,13 @@ namespace WieFit.Common.DAL
                         }
                     }
                 }
-                return true;
-
             }
             catch (Exception)
             {
                 return false;
             }
+
+            return true;
         }
         public List<Location>? GetAllLocations()
         {
