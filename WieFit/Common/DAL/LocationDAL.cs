@@ -86,20 +86,24 @@ namespace WieFit.Common.DAL
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string query = "DELETE FROM LOCATION WHERE locationid = @locationid";
+                    string deletePlannedActivityStatement = @"DELETE FROM PLANNEDACTIVITY WHERE locationid = @locationid";
+                    string deleteLocationStatement = "DELETE FROM LOCATION WHERE locationid = @locationid";
 
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
                     {
-                        using (SqlCommand command = new SqlCommand(query, sqlconnection, sqlTransaction))
+                        using (SqlCommand command = new SqlCommand(deletePlannedActivityStatement, sqlconnection, sqlTransaction))
                         {
-                            {
-                                command.Parameters.AddWithValue("@locationid", location.Id);
-                                command.ExecuteNonQuery();
-
-                                sqlTransaction.Commit();
-                            }
-
+                            command.Parameters.AddWithValue("@locationid", location.Id);
+                            command.ExecuteNonQuery();
                         }
+
+                        using (SqlCommand command = new SqlCommand(deleteLocationStatement, sqlconnection, sqlTransaction))
+                        {
+                            command.Parameters.AddWithValue("@locationid", location.Id);
+                            command.ExecuteNonQuery();
+                        }
+
+                        sqlTransaction.Commit();
                     }
                 }
             }
