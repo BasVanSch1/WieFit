@@ -26,7 +26,7 @@ namespace WieFit.Common.DAL
                 {
                     sqlconnection.Open();
                     string insertLocationStatement = @"INSERT INTO LOCATION (name, address, postalcode, city, country, description) VALUES (@name, @address, @postalcode, @city, @country, @description); SELECT CAST(@@IDENTITY AS INT);";
-                    string getLocationStatement = @"SELECT name, address, postalcode, city, country FROM LOCATION WHERE locationid = @locationid;";
+                    string getLocationStatement = @"SELECT name, address, postalcode, city, country, description FROM LOCATION WHERE locationid = @locationid;";
                     int locationid;
 
                     using (SqlTransaction sqlTransaction = sqlconnection.BeginTransaction())
@@ -117,7 +117,7 @@ namespace WieFit.Common.DAL
             {
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT locationid, name, address, postalcode, city, country  FROM LOCATION";
+                    string query = "SELECT locationid, name, address, postalcode, city, country, description FROM LOCATION";
                     sqlConnection.Open();
 
                     using (SqlTransaction sqlTransaction = sqlConnection.BeginTransaction())
@@ -139,8 +139,9 @@ namespace WieFit.Common.DAL
                                     string _postalcode = (string)sqlDataReader["postalcode"];
                                     string _city = (string)sqlDataReader["city"];
                                     string _country = (string)sqlDataReader["country"];
+                                    string _description = (string)sqlDataReader["description"];
 
-                                    locations.Add(new Location(_id, _name, _address, _postalcode, _city, _country));
+                                    locations.Add(new Location(_id, _name, _address, _postalcode, _city, _country, _description));
                                 }
                             }
                         }
@@ -164,7 +165,7 @@ namespace WieFit.Common.DAL
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = @"SELECT locationid, name, address, postalcode, city, country FROM LOCATION WHERE locationid = @locationid;";
+                    string query = @"SELECT locationid, name, address, postalcode, city, country, description FROM LOCATION WHERE locationid = @locationid;";
                     connection.Open();
 
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -188,8 +189,9 @@ namespace WieFit.Common.DAL
                                 string _postalcode = (string)reader["postalcode"];
                                 string _city = (string)reader["city"];
                                 string _country = (string)reader["country"];
+                                string _description = (string)reader["description"];
 
-                                location = new Location(_id, _name, _address, _postalcode, _city, _country);
+                                location = new Location(_id, _name, _address, _postalcode, _city, _country, _description);
 
                             }
                         }

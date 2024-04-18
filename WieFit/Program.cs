@@ -25,16 +25,6 @@ namespace WieFit
             Menu();
         }
 
-        static void DeleteLocation() 
-        {
-            Console.Clear();
-            Console.WriteLine(menuHeader);
-
-            Console.Write("What location would you like to delete?(Enter location id)");
-            int locationid = Convert.ToInt32(Console.ReadLine());
-            
-        }
-
         static void Login()
         {
             if (loginManager == null)
@@ -62,7 +52,7 @@ namespace WieFit
                 string? password = Console.ReadLine();
                 while (password == null || password.Length <= 0)
                 {
-                    Console.Write("Your password cannot be empty, please try again...");
+                    Console.WriteLine("Your password cannot be empty, please try again...");
                     Console.Write("Please enter your password: ");
                     password = Console.ReadLine();
                 }
@@ -390,6 +380,9 @@ namespace WieFit
         }
         static void CreateAccount()
         {
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
             if (LoggedInUser != null)
             {
                 Console.WriteLine("Cannot create an account when you are already logged in.");
@@ -1182,6 +1175,10 @@ namespace WieFit
 
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
+        }
+        static void DeleteLocation()
+        {
+
         }
     }
 }
