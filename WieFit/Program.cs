@@ -1050,6 +1050,19 @@ namespace WieFit
             Console.Clear();
             Console.WriteLine(menuHeader);
 
+            if (LoggedInUser == null)
+            {
+                return;
+            }
+
+            if (!(LoggedInUser.Type == 'O' || LoggedInUser.Type == 'o'))
+            {
+                Console.WriteLine("You do not have permission to use this function.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
             Console.Write("Enter location name: ");
             string? name = Console.ReadLine();
             while (name == null || name.Length <= 0)
@@ -1166,17 +1179,19 @@ namespace WieFit
         }
         static void DeleteLocation()
         {
-            // check permissions
-            // get all locations
-            // select a location
-            // confirm selection
-            // delete
-
             Console.Clear();
             Console.WriteLine(menuHeader);
 
             if (LoggedInUser == null)
             {
+                return;
+            }
+
+            if (!(LoggedInUser.Type == 'O' || LoggedInUser.Type == 'o'))
+            {
+                Console.WriteLine("You do not have permission to use this function.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
                 return;
             }
 
