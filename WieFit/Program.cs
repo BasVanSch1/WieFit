@@ -1,16 +1,5 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using Azure;
-using Azure.Core;
-using Microsoft.Identity.Client;
-using Microsoft.VisualBasic;
-using WieFit.Common;
+﻿using WieFit.Common;
 using WieFit.Common.Users;
-using Activity = WieFit.Common.Activity;
 
 namespace WieFit
 {
@@ -700,12 +689,13 @@ namespace WieFit
             Console.WriteLine(menuHeader);
             Console.WriteLine(
                 $"""
-                ID:         {location.Id}
-                Name:       {location.Name}
-                Address:    {location.Address}
-                Postalcode: {location.Postalcode}
-                City:       {location.City}
-                Country:    {location.Country}
+                ID:             {location.Id}
+                Name:           {location.Name}
+                Address:        {location.Address}
+                Postalcode:     {location.Postalcode}
+                City:           {location.City}
+                Country:        {location.Country}
+                Description:    {location.Description}
 
                 Planned activities:
                 ======
@@ -1125,17 +1115,27 @@ namespace WieFit
                 country = Console.ReadLine();
             }
 
+            Console.WriteLine("Enter a description for this location: ");
+            string? description = Console.ReadLine();
+            while (description == null ||  description.Length <= 0)
+            {
+                Console.WriteLine("Description cannot be empty. try again.");
+                Console.WriteLine("Enter a description for this location: ");
+                description = Console.ReadLine();
+            }
+
             Console.Clear();
             Console.WriteLine(menuHeader);
 
             Console.WriteLine(
                 $"""
                 ======
-                Name:       {name}
-                Address:    {address}
-                Postalcode: {postalCode}
-                City:       {city}
-                Country:    {country}
+                Name:           {name}
+                Address:        {address}
+                Postalcode:     {postalCode}
+                City:           {city}
+                Country:        {country}
+                Description:    {description}
                 ======
                 """);
             Console.Write("Are you sure you want to create this location? (Y/N): ");
@@ -1171,7 +1171,7 @@ namespace WieFit
                 return;
             }
 
-            Location? location = Location.CreateLocation(name, address, postalCode, city, country);
+            Location? location = Location.CreateLocation(name, address, postalCode, city, country, description);
             if (location == null)
             {
                 Console.WriteLine("Failed to create location. try again later.");

@@ -17,7 +17,7 @@ namespace WieFit.Common.DAL
         static LocationDAL() { }
         private LocationDAL() { }
 
-        public Location? CreateLocation(string name, string address, string postalcode, string city, string country)
+        public Location? CreateLocation(string name, string address, string postalcode, string city, string country, string description)
         {
             Location? location = null;
             try
@@ -25,7 +25,7 @@ namespace WieFit.Common.DAL
                 using (SqlConnection sqlconnection = new SqlConnection(connectionString))
                 {
                     sqlconnection.Open();
-                    string insertLocationStatement = @"INSERT INTO LOCATION (name, address, postalcode, city, country) VALUES (@name, @address, @postalcode, @city, @country); SELECT CAST(@@IDENTITY AS INT);";
+                    string insertLocationStatement = @"INSERT INTO LOCATION (name, address, postalcode, city, country, description) VALUES (@name, @address, @postalcode, @city, @country, @description); SELECT CAST(@@IDENTITY AS INT);";
                     string getLocationStatement = @"SELECT name, address, postalcode, city, country FROM LOCATION WHERE locationid = @locationid;";
                     int locationid;
 
@@ -38,6 +38,7 @@ namespace WieFit.Common.DAL
                             cmd.Parameters.AddWithValue("@postalcode", postalcode);
                             cmd.Parameters.AddWithValue("@city", city);
                             cmd.Parameters.AddWithValue("@country", country);
+                            cmd.Parameters.AddWithValue("@description", description);
 
                             locationid = (int) cmd.ExecuteScalar();
                         }
@@ -60,8 +61,9 @@ namespace WieFit.Common.DAL
                                     string _postalcode = (string)reader["postalcode"];
                                     string _city = (string)reader["city"];
                                     string _country = (string)reader["country"];
+                                    string _description = (string)reader["description"];
 
-                                    location = new Location(_name, _address, _postalcode, _city, _country);
+                                    location = new Location(_name, _address, _postalcode, _city, _country, _description);
                                 }
                             }
                         }
