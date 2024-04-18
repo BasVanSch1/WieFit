@@ -212,12 +212,12 @@ namespace WieFit
                 Console.WriteLine($"Username: {student.Username} | Name: {student.Name} | Age: {student.Age} | Gender: {_gender}");
             }
             
-            Console.WriteLine("Select a student (username)");
+            Console.Write("Select a student (username): ");
             string? selection = Console.ReadLine();
             while (selection == null || selection.Length <= 0)
             {
                 Console.WriteLine("Username cannot be empty. Please try again.");
-                Console.WriteLine("Select a student (username)");
+                Console.Write("Select a student (username): ");
                 selection = Console.ReadLine();
             }
 
@@ -225,7 +225,7 @@ namespace WieFit
             {
                 Console.WriteLine("That student does not exist. Pleas try again.");
 
-                Console.WriteLine("Select a student (username)");
+                Console.Write("Select a student (username): ");
                 selection = Console.ReadLine();
                 while (selection == null || selection.Length <= 0)
                 {
@@ -1278,12 +1278,111 @@ namespace WieFit
             Console.ReadKey();
 
         }
-
         static void LookupStudentResults()
         {
+            Console.Clear();
+            Console.WriteLine(menuHeader);
 
+            if (LoggedInUser == null)
+            {
+                return;
+            }
+
+            if (!(LoggedInUser.Type == 'C' || LoggedInUser.Type == 'c' || LoggedInUser.Type == 'O' || LoggedInUser.Type == 'o'))
+            {
+                Console.WriteLine("You do not have permission to use this function.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            Coach coach = Coach.ConvertToCoach(LoggedInUser);
+            List<Student>? students = coach.GetStudents();
+            Dictionary<string, Student> selectionList = new Dictionary<string, Student>();
+
+            if (students == null)
+            {
+                Console.WriteLine("You have no students. Ask an organizer to add some.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            foreach (Student student in students)
+            {
+                string _gender = "undefined";
+                switch (student.Gender)
+                {
+                    case 'F' or 'f':
+                        _gender = "Female";
+                        break;
+                    case 'M' or 'm':
+                        _gender = "Male";
+                        break;
+                    case 'O' or 'o':
+                        _gender = "Other";
+                        break;
+                }
+
+                selectionList.Add(student.Username, student);
+                Console.WriteLine($"Username: {student.Username} | Name: {student.Name} | Age: {student.Age} | Gender: {_gender}");
+            }
+
+            Console.Write("Select a student (username): ");
+            string? selection = Console.ReadLine();
+            while (selection == null || selection.Length <= 0)
+            {
+                Console.WriteLine("Username cannot be empty. Please try again.");
+                Console.Write("Select a student (username): ");
+                selection = Console.ReadLine();
+            }
+
+            while (!selectionList.ContainsKey(selection))
+            {
+                Console.WriteLine("That student does not exist. Pleas try again.");
+
+                Console.Write("Select a student (username): ");
+                selection = Console.ReadLine();
+                while (selection == null || selection.Length <= 0)
+                {
+                    Console.WriteLine("Username cannot be empty. Please try again.");
+                    Console.Write("Select a student (username): ");
+                    selection = Console.ReadLine();
+                }
+            }
+
+            Student selectedStudent = selectionList[selection];
+
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
+            List<Result>? resultList = selectedStudent.GetResults();
+
+            if (resultList == null)
+            {
+                Console.WriteLine("This student has no results yet!");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("======");
+
+            foreach (Result result in resultList)
+            {
+                Console.WriteLine(
+                    $"""
+                    Activity:       {result.Activity.Name}
+                    Date:           {result.Date}
+                    Description:    {result.Description}
+                    Result value:   {result.Value}
+                    ======
+                    """);
+            }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
-
         static void PrintLocations()
         {
             List<Location>? locationList = Location.GetAllLocations();
@@ -1303,7 +1402,6 @@ namespace WieFit
                 Console.WriteLine($"ID: {loc.Id} | Name: {loc.Name} | Address: {loc.Address} | Postalcode: {loc.Postalcode} | City: {loc.City} | Country: {loc.Country}");
             }
         }
-
         static void PrintLocationInformation(Location location)
         {
             Console.WriteLine(
