@@ -80,13 +80,13 @@ namespace WieFit
         }
         static void AddResult()
         {
+            Console.Clear();
+            Console.WriteLine(menuHeader);
+
             if (LoggedInUser == null)
             {
                 return;
             }
-
-            Console.Clear();
-            Console.WriteLine(menuHeader);
 
             List<Activity>? activityList = Activity.GetAllActivities();
 
@@ -155,12 +155,15 @@ namespace WieFit
 
             if (newresult.AddResult(LoggedInUser))
             {
-                Console.WriteLine("SUCCESS!");
+                Console.WriteLine("Result has been saved!");
             }
             else
             {
-                Console.WriteLine("FAILED...");
+                Console.WriteLine("Failed to save result. try again later.");
             }
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
         static void GiveAdvice()
         {
