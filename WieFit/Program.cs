@@ -284,8 +284,8 @@ namespace WieFit
             Dictionary<int, KeyValuePair<string, Action>> menuItems = new()
             {
                 // Student
-                // [1] = new KeyValuePair<string, Action>("Register for an activity", RegisterForActivity),
-                // [2] = new KeyValuePair<string, Action>("Unregister for an activity", UnregisterForActivity),
+                // [1] = new KeyValuePair<string, Action>("Register for an activity", RegisterForActivity), // niet af kunnen krijgen
+                // [2] = new KeyValuePair<string, Action>("Unregister for an activity", UnregisterForActivity), // niet af kunnen krijgen
                 [3] = new KeyValuePair<string, Action>("Look at Advice from Coach", LookupAdvice),
                 [4] = new KeyValuePair<string, Action>("Lookup location information", LookupLocation),
                 [5] = new KeyValuePair<string, Action>("Add result (activity)", AddResult),
