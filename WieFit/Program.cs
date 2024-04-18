@@ -1178,7 +1178,11 @@ namespace WieFit
         }
         static void DeleteLocation()
         {
-
+            // check permissions
+            // get all locations
+            // select a location
+            // confirm selection
+            // delete
         }
     }
 }
