@@ -103,7 +103,7 @@ namespace WieFit
                 Console.WriteLine($"ID: {act.Id} | Name: {act.Name} | Description: {act.Description}");
             }
 
-            Console.Write("Enter the activity ID you which to add a result for: ");
+            Console.Write("Enter the activity ID you wish to add a result for: ");
             int activityid = -1;
             while (!Int32.TryParse(Console.ReadLine(), out activityid))
             {
@@ -115,12 +115,12 @@ namespace WieFit
             while (activity == null)
             {
                 Console.WriteLine("That activity does not exist. Try again.");
-                Console.Write("Enter the activity ID you which to add a result for: ");
+                Console.Write("Enter the activity ID you wish to add a result for: ");
 
                 while (!Int32.TryParse(Console.ReadLine(), out activityid))
                 {
                     Console.WriteLine("Invalid input. Please enter an integer [0-99]");
-                    Console.Write("Enter the activity ID you which to add a result for:");
+                    Console.Write("Enter the activity ID you wish to add a result for:");
                 }
 
                 activity = Activity.GetActivity(activityid); // HEEL slecht, telkens naar de database vragen voor de activity. maarja, wat is een 'beetje' technical debt nou?
