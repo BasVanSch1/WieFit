@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WieFit.Common.DAL;
+﻿using WieFit.Common.DAL;
 using WieFit.Common.Users;
 
 namespace WieFit.Common
@@ -14,7 +9,7 @@ namespace WieFit.Common
 
         public LoginManager()
         {
-             
+
         }
 
         private bool CheckPassword(string username, string password)

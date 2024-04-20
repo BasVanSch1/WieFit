@@ -1,9 +1,4 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WieFit.Common.DAL
 {
@@ -40,7 +35,7 @@ namespace WieFit.Common.DAL
                             cmd.Parameters.AddWithValue("@country", country);
                             cmd.Parameters.AddWithValue("@description", description);
 
-                            locationid = (int) cmd.ExecuteScalar();
+                            locationid = (int)cmd.ExecuteScalar();
                         }
 
                         using (SqlCommand cmd = new SqlCommand(getLocationStatement, sqlconnection, sqlTransaction))

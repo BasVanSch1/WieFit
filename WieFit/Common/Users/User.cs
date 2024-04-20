@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WieFit.Common.DAL;
+﻿using WieFit.Common.DAL;
 
 namespace WieFit.Common.Users
 {
@@ -14,8 +9,8 @@ namespace WieFit.Common.Users
         public string Username { get; private set; }
         public string Name { get; private set; }
         public string Email { get; private set; }
-        public string Address {  get; private set; }
-        public string PhoneNumber {  get; private set; }
+        public string Address { get; private set; }
+        public string PhoneNumber { get; private set; }
         public int Age { get; private set; }
         public char Gender { get; private set; }
         public char? Type { get; private set; }

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using System.Net;
-using WieFit.Common;
+﻿using WieFit.Common;
 using WieFit.Common.Users;
 
 namespace WieFit
@@ -10,7 +8,7 @@ namespace WieFit
         static LoginManager? loginManager = null;
         static User? LoggedInUser = null;
 
-        static string menuHeader = 
+        static string menuHeader =
             @"
             ==========================================
                 __          ___      ______   _   
@@ -97,8 +95,8 @@ namespace WieFit
                 Console.ReadKey();
                 return;
             }
-            
-            foreach(Activity act in activityList)
+
+            foreach (Activity act in activityList)
             {
                 Console.WriteLine($"ID: {act.Id} | Name: {act.Name} | Description: {act.Description}");
             }
@@ -214,7 +212,7 @@ namespace WieFit
                 selectionList.Add(student.Username, student);
                 Console.WriteLine($"Username: {student.Username} | Name: {student.Name} | Age: {student.Age} | Gender: {_gender}");
             }
-            
+
             Console.Write("Select a student (username): ");
             string? selection = Console.ReadLine();
             while (selection == null || selection.Length <= 0)
@@ -253,7 +251,8 @@ namespace WieFit
             if (coach.GiveAdvice(selectedStudent, advice))
             {
                 Console.WriteLine($"Succesfully gave advice to {selectedStudent.Name}.");
-            } else
+            }
+            else
             {
                 Console.WriteLine("Failed to give advice.");
             }
@@ -293,7 +292,7 @@ namespace WieFit
                 [4] = new KeyValuePair<string, Action>("Lookup location information", LookupLocation),
                 [5] = new KeyValuePair<string, Action>("Add result (activity)", AddResult),
                 [6] = new KeyValuePair<string, Action>("Lookup results", LookupResult),
-                
+
                 // Coach
                 [10] = new KeyValuePair<string, Action>("Give advice to Student", GiveAdvice),
                 [11] = new KeyValuePair<string, Action>("Lookup student's Results", LookupStudentResults),
@@ -372,11 +371,12 @@ namespace WieFit
                     Console.WriteLine("Invalid input. Please enter an integer [0-99]");
                     Console.Write("Enter a menu item number: ");
                 }
-                
+
                 if (menuItems.TryGetValue(choice, out KeyValuePair<string, Action> action))
                 {
                     action.Value();
-                } else
+                }
+                else
                 {
                     Console.WriteLine("That option does not exist. Try again.");
                     Console.Write("Press any key to continue...");
@@ -564,7 +564,7 @@ namespace WieFit
             if (LoggedInUser == null)
             {
                 return;
-            }    
+            }
 
             Console.Clear();
             Console.WriteLine(menuHeader);
@@ -575,7 +575,8 @@ namespace WieFit
             if (adviceList == null || adviceList.Count == 0)
             {
                 Console.WriteLine("You have no advice yet. Ask your coach!");
-            } else
+            }
+            else
             {
                 foreach (Advice advice in adviceList)
                 {
@@ -689,7 +690,8 @@ namespace WieFit
             {
                 Console.WriteLine("There are no activities planned for this location.");
                 Console.WriteLine("======");
-            } else
+            }
+            else
             {
                 foreach (PlannedActivity activity in location.PlannedActivities)
                 {
@@ -750,7 +752,8 @@ namespace WieFit
             if (activity == null)
             {
                 Console.WriteLine("Something went wrong when uploading the activity. try again later.");
-            } else
+            }
+            else
             {
                 Console.WriteLine("Activity created!");
                 Console.WriteLine(
@@ -879,7 +882,7 @@ namespace WieFit
                 ======
                 """);
 
-            if (activityList == null  || activityList.Count == 0)
+            if (activityList == null || activityList.Count == 0)
             {
                 Console.WriteLine("There are no activity templates registered in the system. Create some first!");
                 Console.WriteLine("======");
@@ -1040,7 +1043,8 @@ namespace WieFit
             if (plannedActivity == null)
             {
                 Console.WriteLine("Something went wrong while uploading the PlannedActivity to the database.");
-            } else
+            }
+            else
             {
                 Console.WriteLine("Succesfully planned in the activity!");
             }
@@ -1114,7 +1118,7 @@ namespace WieFit
 
             Console.WriteLine("Enter a description for this location: ");
             string? description = Console.ReadLine();
-            while (description == null ||  description.Length <= 0)
+            while (description == null || description.Length <= 0)
             {
                 Console.WriteLine("Description cannot be empty. try again.");
                 Console.WriteLine("Enter a description for this location: ");
@@ -1172,7 +1176,8 @@ namespace WieFit
             if (location == null)
             {
                 Console.WriteLine("Failed to create location. try again later.");
-            } else
+            }
+            else
             {
                 Console.WriteLine("Succesfully created location!");
             }
@@ -1272,7 +1277,8 @@ namespace WieFit
             if (location.DeleteLocation())
             {
                 Console.WriteLine("Location deleted.");
-            } else
+            }
+            else
             {
                 Console.WriteLine("Failed to delete location.");
             }

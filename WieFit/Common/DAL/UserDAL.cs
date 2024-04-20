@@ -1,9 +1,4 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WieFit.Common.Users;
 
 namespace WieFit.Common.DAL
@@ -173,7 +168,8 @@ namespace WieFit.Common.DAL
                         sqlTransaction.Commit();
                     }
                 }
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return null;
             }
@@ -185,20 +181,20 @@ namespace WieFit.Common.DAL
             Coach? coach = null;
             try
             {
-                using(SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     string query = @"SELECT username,name, email, address, phonenumber, age, gender FROM USERS WHERE type = 'C' AND username = @username; ";
                     connection.Open();
 
-                    using(SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlTransaction transaction = connection.BeginTransaction())
                     {
-                        using (SqlCommand command = new SqlCommand(query, connection,transaction))
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
                         {
                             command.Parameters.AddWithValue("@username", username);
 
-                            using(SqlDataReader reader = command.ExecuteReader()) 
+                            using (SqlDataReader reader = command.ExecuteReader())
                             {
-                                
+
                                 if (reader.Read())
                                 {
                                     string _username = (string)reader["username"];
@@ -220,7 +216,8 @@ namespace WieFit.Common.DAL
                         transaction.Commit();
                     }
                 }
-            }catch (Exception)
+            }
+            catch (Exception)
             {
                 return null;
             }
@@ -236,13 +233,13 @@ namespace WieFit.Common.DAL
                     string query = @"SELECT U.username, U.name, U.email, U.address, U.phonenumber, U.age, U.gender, U.type FROM USERS U INNER JOIN USERSCOACH UC ON U.username = UC.username WHERE UC.coachusername = @coachusername";
                     connection.Open();
 
-                    using(SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlTransaction transaction = connection.BeginTransaction())
                     {
-                        using(SqlCommand command = new SqlCommand(query, connection, transaction))
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
                         {
                             command.Parameters.AddWithValue("@coachusername", coach.Username);
 
-                            using(SqlDataReader reader = command.ExecuteReader())
+                            using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 if (!reader.HasRows)
                                 {
@@ -265,7 +262,8 @@ namespace WieFit.Common.DAL
                         transaction.Commit();
                     }
                 }
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return null;
             }
@@ -273,14 +271,14 @@ namespace WieFit.Common.DAL
         }
         public bool GiveAdvise(Advice advice)
         {
-            try 
+            try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     string query = @"INSERT INTO ADVICE(student, coach, advice) VALUES(@studentusername, @coachusername, @advice)";
                     connection.Open();
 
-                    using(SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlTransaction transaction = connection.BeginTransaction())
                     {
                         using (SqlCommand command = new SqlCommand(query, connection, transaction))
                         {
@@ -293,7 +291,8 @@ namespace WieFit.Common.DAL
                         transaction.Commit();
                     }
                 }
-            }catch (Exception)
+            }
+            catch (Exception)
             {
                 return false;
             }
@@ -302,21 +301,21 @@ namespace WieFit.Common.DAL
         public List<Advice>? GetAdvice(User user)
         {
             List<Advice>? advices = new List<Advice>();
-            
+
             try
             {
-                using(SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     string query = @"SELECT A.advice, A.adviceid,A.coach, U.username,U.name, U.email, U.address, U.phonenumber, U.age, U.gender FROM ADVICE A JOIN USERS U ON U.username = A.coach WHERE student = @username";
                     connection.Open();
 
-                    using(SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlTransaction transaction = connection.BeginTransaction())
                     {
-                        using(SqlCommand command = new SqlCommand(query,connection, transaction))
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
                         {
                             command.Parameters.AddWithValue("@username", user.Username);
 
-                            using(SqlDataReader reader = command.ExecuteReader()) 
+                            using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
                                 {
@@ -339,7 +338,8 @@ namespace WieFit.Common.DAL
                     }
                 }
 
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return null;
             }
@@ -359,7 +359,7 @@ namespace WieFit.Common.DAL
                         using (SqlCommand cmd = new SqlCommand(usernameStatement, sqlConnection, sqlTransaction))
                         {
                             cmd.Parameters.AddWithValue("@username", username);
-                            int count = (int) cmd.ExecuteScalar();
+                            int count = (int)cmd.ExecuteScalar();
 
                             if (count >= 1)
                             {
@@ -368,7 +368,8 @@ namespace WieFit.Common.DAL
                         }
                     }
                 }
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return false;
             }
@@ -391,7 +392,7 @@ namespace WieFit.Common.DAL
                         using (SqlCommand cmd = new SqlCommand(usernameStatement, sqlConnection, sqlTransaction))
                         {
                             cmd.Parameters.AddWithValue("@username", user.Username);
-                            
+
                             using (SqlDataReader reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
@@ -404,7 +405,7 @@ namespace WieFit.Common.DAL
                                     usertype = (char)reader["type"].ToString().ToCharArray().First();
                                 }
                             }
-                            
+
                         }
                     }
                 }

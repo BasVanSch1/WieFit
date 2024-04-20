@@ -1,9 +1,4 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WieFit.Common.Users;
 
 namespace WieFit.Common.DAL
@@ -42,7 +37,7 @@ namespace WieFit.Common.DAL
                         using (SqlCommand cmd = new SqlCommand(getActivity, sqlConnection, sqlTransaction))
                         {
                             cmd.Parameters.AddWithValue("@activityid", activityid);
-                            
+
                             using (SqlDataReader reader = cmd.ExecuteReader())
                             {
                                 if (!reader.HasRows)
